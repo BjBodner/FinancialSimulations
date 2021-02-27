@@ -138,7 +138,7 @@ class PortFolio:
         amount_of_stocks_to_liquidate = amount_to_withdraw / (1 - self.tax_rate_for_selling_stock)
         self.amount_invested -= amount_of_stocks_to_liquidate
         self.total_balance -= amount_of_stocks_to_liquidate
-        if self.total_balance < self.minimal_amount_for_withdrawl:
+        if self.total_balance < (self.minimal_amount_for_withdrawl - 1):
             raise ValueError(f"portfolio exceeeded minimal amount")
         return amount_to_withdraw
 

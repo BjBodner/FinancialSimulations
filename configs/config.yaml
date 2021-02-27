@@ -9,11 +9,7 @@ simulation_params:
 initial:
   location: "israel"
   num_kids: 0
-
-
-
   incomes:
-    # incomes
     benjy:
       # jobs
       jobs:
@@ -47,7 +43,6 @@ initial:
         options:
           amount_invested: 0
           minimal_amount_for_withdrawl: 0
-
 
     inbar:
       # jobs
@@ -84,6 +79,48 @@ initial:
           minimal_amount_for_withdrawl: 0
 
 
-initial_expenses:
-  - 
+  expenses:
+  
 
+
+expenses_timeline:
+  first_kid: 
+    year: 2
+    method: have_kid
+    params: 
+      location: israel
+
+  second_kid: 
+    year: 5
+    method: have_kid
+    params: 
+      location: israel
+
+  third_kid: 
+    year: 8
+    method: have_kid
+    params: 
+      location: israel
+
+  buy_house:
+    year: 5
+    method: add_expense
+    params:
+      expense_name: "house"
+      expense_type: "House"
+      expense_params:
+        full_price: 3000
+        down_payment: 600
+        monthly_payment: 8
+
+  move_out_of_apartment:
+    year: 5
+    method: remove_expense
+    params:
+      expense_name: "apartment"
+
+  stop_having_big_family_trips:
+    year: 20
+    method: remove_expense
+    params:
+      expense_name: "big_family_trip"
