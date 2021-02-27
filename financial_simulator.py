@@ -27,7 +27,7 @@ from incomes import (
 )
 from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker
 
-
+# TODO add multiple runs for averaging and variance analysis
 
 
 class FinancialSimulator:
@@ -35,85 +35,47 @@ class FinancialSimulator:
     def __init__(self, config_path):
         self.config = self.load_config(config_path)
 
-        self.balance_in_bank_account = 0 # TODO load this from the config
-        self.total_num_months = 0 # TODO load this from the config
-        self.num_years = 35 # TODO load this from the config
+        self.total_num_months = 0 
         self.portfolio_tracker = None
 
+        # parse config
+        self.balance_in_bank_account = self.config["simulation_params"]["balance_in_bank_account"]  # TODO load this from the config
+        self.num_years = self.config["simulation_params"]["num_years"] 
+        self.names_of_parents = self.config["simulation_params"]["names_of_parents"]
         self.location = self.config["initial"]["location"]
         self.num_kids = self.config["initial"]["num_kids"]
-
+        
+        # initialize incomes and expenses
         self.total_incomes = self.get_initial_incomes()
         self.total_expenses = self.get_initial_expenses()
+
 
     def load_config(self, config_path):
         with open(config_path, "r") as fh:
             return yaml.load(fh, yaml.FullLoader)
 
+
     def get_initial_incomes(self):
 
         initial_incomes_params = self.config["initial"]["incomes"]
+        dict_of_parents = {}
 
+        # create all parents
+        for parent_name in self.names_of_parents:
 
-        # benjy_job = Job(**initial_incomes_params["benjy"]["jobs"]["main_job"])
+            # create jobs
+            dict_of_monthly_incomes = {"main_job": Job(**initial_incomes_params[parent_name]["jobs"]["main_job"])}
 
+            # create portfolios
+            dict_of_portfolios = {
+                portfolio_name: PortFolio(**porfolio_params) for portfolio_name, porfolio_params in initial_incomes_params[parent_name]["porfolios"].items()
+            }
 
+            # create parent
+            dict_of_parents[parent_name] = Parent(dict_of_monthly_incomes=dict_of_monthly_incomes, dict_of_portfolios=dict_of_portfolios)
 
-        # # create benjy
-        # benjy_job = Job(
-        #         base_salary_after_taxes=18.5, 
-        #         probability_of_loosing_job=0.2, 
-        #         percentage_of_base_salary_for_stocks=0.0, 
-        #         bonus_fraction_of_annual_income=0.0, 
-        #         dollar_amount_per_year=0,
-        #         has_pension_plan=True,
-        #         has_keren_hishtalmut_plan=True,
-        #     )
-        # benjy_dict_of_portfolios = {NAME_OF_MAIN_PORTFOLION: PortFolio(amount_invested=100, minimal_amount_for_withdrawl=50)}
-        # for portfolio_name in JOB_RELATED_PORTFOLIOS:
-        #     benjy_dict_of_portfolios[portfolio_name] = PortFolio(
-        #         amount_invested=0, 
-        #         tax_rate_for_selling_stock=0 if portfolio_name == "keren_hishtalmut" else 0.25,
-        #         minimal_amount_for_withdrawl=0
-        #     )
-        # benjy = Parent(dict_of_monthly_incomes={"main_job": benjy_job}, dict_of_portfolios=benjy_dict_of_portfolios)
-
-
-        benjy_dict_of_monthly_incomes = {"main_job": Job(**initial_incomes_params["benjy"]["jobs"]["main_job"])}
-
-        # benjy_portfolio_params = 
-
-        benjy_dict_of_portfolios = {
-            portfolio_name: PortFolio(**porfolio_params) for portfolio_name, porfolio_params in initial_incomes_params["benjy"]["porfolios"].items()
-        }
-        benjy = Parent(dict_of_monthly_incomes=benjy_dict_of_monthly_incomes, dict_of_portfolios=benjy_dict_of_portfolios)
-
-
-        # create inbar
-        inbar_job = Job(base_salary_after_taxes=16.7, 
-                probability_of_loosing_job=0.2, 
-                percentage_of_base_salary_for_stocks=0.1, 
-                bonus_fraction_of_annual_income=0.1, 
-                dollar_amount_per_year=30,
-                has_pension_plan=True,
-                has_keren_hishtalmut_plan=True,
-
-            )
-        inbar_dict_of_portfolios = {NAME_OF_MAIN_PORTFOLION: PortFolio(amount_invested=40)}
-        for portfolio_name in JOB_RELATED_PORTFOLIOS:
-            inbar_dict_of_portfolios[portfolio_name] = PortFolio(
-                amount_invested=0, 
-                tax_rate_for_selling_stock=0 if portfolio_name == "keren_hishtalmut" else 0.25,
-                minimal_amount_for_withdrawl=0
-            )
-        inbar = Parent(dict_of_monthly_incomes={"main_job": inbar_job}, dict_of_portfolios=inbar_dict_of_portfolios)
-
-
-        
-
-
-        # combine all income sources into a total incomes class
-        total_incomes = TotalIncomes(dict_of_parents={"benjy": benjy, "inbar": inbar})
+        # combine all into total incomes
+        total_incomes = TotalIncomes(dict_of_parents=dict_of_parents)
 
         return total_incomes
 
@@ -135,9 +97,6 @@ class FinancialSimulator:
         }
         total_expenses = TotalExpenses(dict_of_expenses=dict_of_expenses)
         return total_expenses
-
-
-
 
 
     def handle_incomes_and_expenses(self, monthly_incomes, monthly_expenses):
@@ -166,12 +125,8 @@ class FinancialSimulator:
         else:
             self.portfolio_tracker.add_new_values_of_portfolios(all_portfolios)
 
-        # return total_incomes, balance_in_bank_account, portfolio_tracker
-
-
 
     def simulate_one_year(self):
-        # TODO convert to class and then we won't need all these input arguments
         for month in range(12):
 
             # get incomes and expenses
@@ -189,8 +144,6 @@ class FinancialSimulator:
         self.total_incomes.increment_by_one_year()
         self.total_expenses.increment_by_one_year() 
 
-        # return total_incomes, self.total_expenses, balance_in_bank_account, portfolio_tracker, total_num_months
-
 
     def run_simulation(self, number_of_repititions=1):
         for year in range(self.num_years):
@@ -198,24 +151,26 @@ class FinancialSimulator:
             # simulate one year
             self.simulate_one_year()
 
-            # # apply changes if needed, according to timeline
-            # self.change_incomes_if_needed()
-            # self.change_expenses_if_needed()
+            self.apply_changes_if_needed(year)
 
-            # self.change_jobs_if_needed()
-            # self.change_country_if_needed()
-           
-            if year == 2:
-                self.total_expenses.have_kid(location="israel")
-            if year == 5:
-                self.total_expenses.have_kid(location="israel")
-                self.total_expenses.add_expense(expense_name="house", expense=House(full_price=3000, down_payment=600, monthly_payment=8))
-                self.total_expenses.remove_expense("apartment")
-            if year == 8:
-                self.total_expenses.have_kid(location="israel")
-            if year == 20:
-                self.total_expenses.remove_expense("big_family_trip")
+    def apply_changes_if_needed(self, year):
+        # TODO convert the changes to the following format
+        # self.change_incomes_if_needed()
+        # self.change_expenses_if_needed()
 
+        # self.change_jobs_if_needed()
+        # self.change_country_if_needed()
+        
+        if year == 2:
+            self.total_expenses.have_kid(location=self.location)
+        if year == 5:
+            self.total_expenses.have_kid(location=self.location)
+            self.total_expenses.add_expense(expense_name="house", expense=House(full_price=3000, down_payment=600, monthly_payment=8))
+            self.total_expenses.remove_expense("apartment")
+        if year == 8:
+            self.total_expenses.have_kid(location=self.location)
+        if year == 20:
+            self.total_expenses.remove_expense("big_family_trip")
 
 
     def plot_all_portfolios(self):

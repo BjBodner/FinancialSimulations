@@ -3,7 +3,8 @@
 
 simulation_params:
   num_years: 35
-
+  names_of_parents: ["benjy", "inbar"]
+  balance_in_bank_account: 0
 
 initial:
   location: "israel"
