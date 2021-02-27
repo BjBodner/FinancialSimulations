@@ -86,8 +86,7 @@ def get_total_expenses():
         "weekend_trips1": WeekendTrips(num_days=2, num_kids=0),
         "weekend_trips2": WeekendTrips(num_days=2, num_kids=0),
         "weekend_trips3": WeekendTrips(num_days=2, num_kids=0),
-        # "weekend_trips4": WeekendTrips(num_days=2, num_kids=0),
-        # "weekend_trips5": WeekendTrips(num_days=2, num_kids=0),
+        "weekend_trips4": WeekendTrips(num_days=2, num_kids=0),
     }
     total_expenses = TotalExpenses(dict_of_expenses=dict_of_expenses)
     return total_expenses
@@ -156,6 +155,41 @@ def plot_portfolio(portfolio_tracker, total_num_months, portfolio_name, target_n
 
 
 
+def plot_all_portfolios(portfolio_tracker, total_num_months, target_net_worth_for_retirement=3000):
+    years = np.linspace(0, total_num_months/12, total_num_months)
+    retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
+
+
+    portfolio_names = ["net_worth"] + list(portfolio_tracker.portflio_trackers[NAMES_OF_PARENTS[0]].keys())
+    fig, all_ax = plt.subplots(len(portfolio_names), figsize=(20,10))
+    i = 0
+
+    for ax, portfolio_name in zip(all_ax, portfolio_names):
+            
+        for parent_name in NAMES_OF_PARENTS:
+            if portfolio_name == "net_worth":
+                portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
+            else:
+                portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
+
+            ax.plot(years, portfolio_balance)
+
+        ax.plot(years, retirment_target, "--k")
+        ax.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
+        ax.set_title(f"{portfolio_name} balance")
+        ax.yaxis.set_ticks(np.arange(0, 1.2 * max(np.max(portfolio_balance), np.max(portfolio_balance)), 1000))
+        ax.grid()
+
+        if i < (len(all_ax) - 1):
+            ax.xaxis.set_ticklabels([])
+        i += 1
+
+
+    plt.xlabel("years")
+    plt.ylabel("balance (thousands of shekels)")
+    plt.show()
+
+
 def simulate_one_year(total_incomes, total_expenses, balance_in_bank_account, portfolio_tracker, total_num_months):
     # TODO convert to class and then we won't need all these input arguments
     for month in range(12):
@@ -209,8 +243,5 @@ if __name__ == "__main__":
 
 
     # plot portfolios
-    # TODO display all these in one 4-way plot, including keren hishtalmut
     # TODO make comparisons easily available
-    plot_portfolio(portfolio_tracker, total_num_months, portfolio_name=NAME_OF_MAIN_PORTFOLION, target_net_worth_for_retirement=3000)
-    plot_portfolio(portfolio_tracker, total_num_months, portfolio_name="pension", target_net_worth_for_retirement=3000)
-    plot_portfolio(portfolio_tracker, total_num_months, portfolio_name="net_worth", target_net_worth_for_retirement=3000)
+    plot_all_portfolios(portfolio_tracker, total_num_months, target_net_worth_for_retirement=3000)
