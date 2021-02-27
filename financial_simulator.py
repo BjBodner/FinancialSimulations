@@ -87,45 +87,11 @@ class FinancialSimulator:
 
 
     def get_initial_expenses(self):
-        # dict_of_expenses = {
-        #     "apartment": LocationDependentApartment(location=self.location, num_kids=self.num_kids),
-        #     "bills": Bills(),
-        #     "fun": Fun(),
-        #     "pet": Pet(),
-        #     "living_expenses": LivingExpenses(),
-        #     "car": Car(payed_down_payment=True),
-        #     "big_family_trip": BigFamilyTrip(num_days=7, num_kids=self.num_kids),
-        #     "small_family_trip1": SmallFamilyTrip(num_days=4, num_kids=self.num_kids),
-        #     "weekend_trips1": WeekendTrips(num_days=2, num_kids=self.num_kids),
-        #     "weekend_trips2": WeekendTrips(num_days=2, num_kids=self.num_kids),
-        #     "weekend_trips3": WeekendTrips(num_days=2, num_kids=self.num_kids),
-        #     "weekend_trips4": WeekendTrips(num_days=2, num_kids=self.num_kids),
-        # }
-        # total_expenses = TotalExpenses(dict_of_expenses=dict_of_expenses)
-
-
-
+     
         initial_expenses = self.config["initial"]["expenses"]
-
         dict_of_expenses = {}
         for expense_name, expense_params in initial_expenses.items():
-            # # if expense_change_information["year"] == current_year:
-            #     method_name = expense_change_information["method"]
-            #     change_method = getattr(self.total_expenses, method_name)
-
-
-            #     # implement the change
-            #     if method_name == "add_expense":
-            #         params = expense_change_information["params"]
-            #         expense_class = getattr(expenses, params["expense_type"])
-            #         change_method(expense_name=params["expense_name"], expense=expense_class(**params["expense_params"]))
-            #     else:
-
-            #         change_method(**expense_change_information["params"])
-                        
-
-            #         dict_of_expenses = {expense_name: expense_class(**expense_params) for expense_name, expense_params in initial_expenses.items()}
-
+          
                 expense_class = getattr(expenses, expense_params["expense_type"])
                 dict_of_expenses[expense_name] = expense_class(**expense_params["expense_params"])
 
