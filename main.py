@@ -24,9 +24,8 @@ from incomes import (
     Parent,
     TotalIncomes
 )
-from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, PortFolioTracker
+from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker
 
-NAMES_OF_PARENTS = ["benjy", "inbar"]
 
 def get_total_incomes():
 
@@ -122,72 +121,62 @@ def handle_incomes_and_expenses(monthly_incomes, monthly_expenses, total_incomes
     return total_incomes, balance_in_bank_account, portfolio_tracker
 
 
-def get_net_worth(portfolio_tracker, parent_name):
-    net_worth = None
-    for name in portfolio_tracker.portflio_trackers[parent_name].keys():
-        portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][name]
-        if net_worth is None:
-            net_worth = portfolio_balance
-        else:
-            net_worth = [i + j for i, j in zip(net_worth, portfolio_balance)] # combine all values
-    return net_worth
+
+# def plot_portfolio(portfolio_tracker, total_num_months, portfolio_name, target_net_worth_for_retirement=3000):
+#     years = np.linspace(0, total_num_months/12, total_num_months)
+#     retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
+
+#     for parent_name in NAMES_OF_PARENTS:
+#         if portfolio_name == "net_worth":
+#             portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
+#         else:
+#             portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
+
+#         plt.plot(years, portfolio_balance)
 
 
-def plot_portfolio(portfolio_tracker, total_num_months, portfolio_name, target_net_worth_for_retirement=3000):
-    years = np.linspace(0, total_num_months/12, total_num_months)
-    retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
-
-    for parent_name in NAMES_OF_PARENTS:
-        if portfolio_name == "net_worth":
-            portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
-        else:
-            portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
-
-        plt.plot(years, portfolio_balance)
-
-
-    plt.plot(years, retirment_target, "--k")
-    plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
-    plt.xlabel("years")
-    plt.ylabel("balance (thousands of shekels)")
-    plt.title(f"{portfolio_name} balance throughout the years")
-    plt.show()
+#     plt.plot(years, retirment_target, "--k")
+#     plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
+#     plt.xlabel("years")
+#     plt.ylabel("balance (thousands of shekels)")
+#     plt.title(f"{portfolio_name} balance throughout the years")
+#     plt.show()
 
 
 
-def plot_all_portfolios(portfolio_tracker, total_num_months, target_net_worth_for_retirement=3000):
-    years = np.linspace(0, total_num_months/12, total_num_months)
-    retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
+# def plot_all_portfolios(portfolio_tracker, total_num_months, target_net_worth_for_retirement=3000):
+#     years = np.linspace(0, total_num_months/12, total_num_months)
+#     retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
 
 
-    portfolio_names = ["net_worth"] + list(portfolio_tracker.portflio_trackers[NAMES_OF_PARENTS[0]].keys())
-    fig, all_ax = plt.subplots(len(portfolio_names), figsize=(20,10))
-    i = 0
+#     portfolio_names = ["net_worth"] + list(portfolio_tracker.portflio_trackers[NAMES_OF_PARENTS[0]].keys())
+#     fig, all_ax = plt.subplots(len(portfolio_names), figsize=(20,10))
+#     i = 0
 
-    for ax, portfolio_name in zip(all_ax, portfolio_names):
+#     for ax, portfolio_name in zip(all_ax, portfolio_names):
             
-        for parent_name in NAMES_OF_PARENTS:
-            if portfolio_name == "net_worth":
-                portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
-            else:
-                portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
+#         for parent_name in NAMES_OF_PARENTS:
+#             if portfolio_name == "net_worth":
+#                 portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
+#             else:
+#                 portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
 
-            ax.plot(years, portfolio_balance)
+#             ax.plot(years, portfolio_balance)
 
-        ax.plot(years, retirment_target, "--k")
-        ax.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
-        ax.set_title(f"{portfolio_name} balance")
-        ax.yaxis.set_ticks(np.arange(0, 1.2 * max(np.max(portfolio_balance), np.max(portfolio_balance)), 1000))
-        ax.grid()
+#         ax.plot(years, retirment_target, "--k")
+#         ax.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
+#         ax.set_title(f"{portfolio_name} balance")
+#         ax.yaxis.set_ticks(np.arange(0, 1.2 * max(np.max(portfolio_balance), np.max(portfolio_balance)), 1000))
+#         ax.grid()
 
-        if i < (len(all_ax) - 1):
-            ax.xaxis.set_ticklabels([])
-        i += 1
+#         if i < (len(all_ax) - 1):
+#             ax.xaxis.set_ticklabels([])
+#         i += 1
 
 
-    plt.xlabel("years")
-    plt.ylabel("balance (thousands of shekels)")
-    plt.show()
+    # plt.xlabel("years")
+    # plt.ylabel("balance (thousands of shekels)")
+    # plt.show()
 
 
 def simulate_one_year(total_incomes, total_expenses, balance_in_bank_account, portfolio_tracker, total_num_months):
@@ -244,4 +233,4 @@ if __name__ == "__main__":
 
     # plot portfolios
     # TODO make comparisons easily available
-    plot_all_portfolios(portfolio_tracker, total_num_months, target_net_worth_for_retirement=3000)
+    portfolio_tracker.plot_all_portfolios(total_num_months, target_net_worth_for_retirement=3000)
