@@ -121,64 +121,6 @@ def handle_incomes_and_expenses(monthly_incomes, monthly_expenses, total_incomes
     return total_incomes, balance_in_bank_account, portfolio_tracker
 
 
-
-# def plot_portfolio(portfolio_tracker, total_num_months, portfolio_name, target_net_worth_for_retirement=3000):
-#     years = np.linspace(0, total_num_months/12, total_num_months)
-#     retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
-
-#     for parent_name in NAMES_OF_PARENTS:
-#         if portfolio_name == "net_worth":
-#             portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
-#         else:
-#             portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
-
-#         plt.plot(years, portfolio_balance)
-
-
-#     plt.plot(years, retirment_target, "--k")
-#     plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
-#     plt.xlabel("years")
-#     plt.ylabel("balance (thousands of shekels)")
-#     plt.title(f"{portfolio_name} balance throughout the years")
-#     plt.show()
-
-
-
-# def plot_all_portfolios(portfolio_tracker, total_num_months, target_net_worth_for_retirement=3000):
-#     years = np.linspace(0, total_num_months/12, total_num_months)
-#     retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
-
-
-#     portfolio_names = ["net_worth"] + list(portfolio_tracker.portflio_trackers[NAMES_OF_PARENTS[0]].keys())
-#     fig, all_ax = plt.subplots(len(portfolio_names), figsize=(20,10))
-#     i = 0
-
-#     for ax, portfolio_name in zip(all_ax, portfolio_names):
-            
-#         for parent_name in NAMES_OF_PARENTS:
-#             if portfolio_name == "net_worth":
-#                 portfolio_balance = get_net_worth(portfolio_tracker, parent_name)
-#             else:
-#                 portfolio_balance = portfolio_tracker.portflio_trackers[parent_name][portfolio_name]
-
-#             ax.plot(years, portfolio_balance)
-
-#         ax.plot(years, retirment_target, "--k")
-#         ax.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
-#         ax.set_title(f"{portfolio_name} balance")
-#         ax.yaxis.set_ticks(np.arange(0, 1.2 * max(np.max(portfolio_balance), np.max(portfolio_balance)), 1000))
-#         ax.grid()
-
-#         if i < (len(all_ax) - 1):
-#             ax.xaxis.set_ticklabels([])
-#         i += 1
-
-
-    # plt.xlabel("years")
-    # plt.ylabel("balance (thousands of shekels)")
-    # plt.show()
-
-
 def simulate_one_year(total_incomes, total_expenses, balance_in_bank_account, portfolio_tracker, total_num_months):
     # TODO convert to class and then we won't need all these input arguments
     for month in range(12):
