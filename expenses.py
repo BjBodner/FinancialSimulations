@@ -211,7 +211,7 @@ class LocationDependentApartment(Expense):
 
 
 class Bills(Expense):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__() 
 
     def get_expense(self):
@@ -224,7 +224,7 @@ class Bills(Expense):
 
 
 class Fun(Expense):
-    def __init__(self, location="israel"):
+    def __init__(self, location="israel", **kwargs):
         super().__init__()
         self.location = location
 
@@ -238,7 +238,7 @@ class Fun(Expense):
             return 2
 
 class Pet(Expense):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__() 
 
     def get_expense(self):
@@ -250,7 +250,7 @@ class Pet(Expense):
 
 
 class LivingExpenses(Expense):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__() 
 
     def get_expense(self):

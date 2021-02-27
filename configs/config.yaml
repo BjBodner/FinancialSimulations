@@ -80,7 +80,74 @@ initial:
 
 
   expenses:
-  
+    apartment: 
+      expense_type: "LocationDependentApartment"
+      expense_params:
+        location: "israel"
+        num_kids: 0
+
+    bills: 
+      expense_type: "Bills"
+      expense_params:
+        none: none
+
+    fun: 
+      expense_type: "Fun"
+      expense_params:
+        none: none
+
+    pet:
+      expense_type: "Pet"
+      expense_params:
+        none: none
+
+    living_expenses:
+      expense_type: "LivingExpenses"
+      expense_params:
+        none: none
+
+    car1:
+      expense_type: "Car"
+      expense_params:
+        payed_down_payment: True
+
+    big_family_trip1:
+      expense_type: "BigFamilyTrip"
+      expense_params:
+        num_days: 7
+        num_kids: 0
+
+    small_family_trip1:
+      expense_type: "SmallFamilyTrip"
+      expense_params:
+        num_days: 4
+        num_kids: 0
+
+    weekend_trips1:
+      expense_type: "WeekendTrips"
+      expense_params:
+        num_days: 2
+        num_kids: 0
+
+    weekend_trips2:
+      expense_type: "WeekendTrips"
+      expense_params:
+        num_days: 2
+        num_kids: 0
+
+    weekend_trips3:
+      expense_type: "WeekendTrips"
+      expense_params:
+        num_days: 2
+        num_kids: 0
+
+    weekend_trips4:
+      expense_type: "WeekendTrips"
+      expense_params:
+        num_days: 2
+        num_kids: 0
+        
+
 
 
 expenses_timeline:
@@ -123,4 +190,4 @@ expenses_timeline:
     year: 20
     method: remove_expense
     params:
-      expense_name: "big_family_trip"
+      expense_name: "big_family_trip1"
