@@ -106,7 +106,6 @@ class TotalIncomes:
         return portfolios
 
     def withdraw_from_main_portfolio(self, parent_name, amount_to_withdraw):
-        # TODO add here a condition that if the portfolio is below a threshold, then withdraw from keren hishtalmut
         return self.dict_of_parents[parent_name].withdraw_from_main_portfolio(amount_to_withdraw) 
 
     def invest_in_main_portfolio(self, parent_name, investment):
