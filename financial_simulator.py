@@ -35,13 +35,16 @@ class FinancialSimulator:
     def __init__(self, config_path):
         self.config = self.load_config(config_path)
 
-        self.total_incomes = self.get_initial_incomes()
-        self.total_expenses = self.get_initial_expenses()
         self.balance_in_bank_account = 0 # TODO load this from the config
         self.total_num_months = 0 # TODO load this from the config
         self.num_years = 35 # TODO load this from the config
         self.portfolio_tracker = None
 
+        self.location = self.config["initial"]["location"]
+        self.num_kids = self.config["initial"]["num_kids"]
+
+        self.total_incomes = self.get_initial_incomes()
+        self.total_expenses = self.get_initial_expenses()
 
     def load_config(self, config_path):
         with open(config_path, "r") as fh:
@@ -49,24 +52,41 @@ class FinancialSimulator:
 
     def get_initial_incomes(self):
 
-        # create benjy
-        benjy_job = Job(
-                base_salary_after_taxes=18.5, 
-                probability_of_loosing_job=0.2, 
-                percentage_of_base_salary_for_stocks=0.0, 
-                bonus_fraction_of_annual_income=0.0, 
-                dollar_amount_per_year=0,
-                has_pension_plan=True,
-                has_keren_hishtalmut_plan=True,
-            )
-        benjy_dict_of_portfolios = {NAME_OF_MAIN_PORTFOLION: PortFolio(amount_invested=100, minimal_amount_for_withdrawl=50)}
-        for portfolio_name in JOB_RELATED_PORTFOLIOS:
-            benjy_dict_of_portfolios[portfolio_name] = PortFolio(
-                amount_invested=0, 
-                tax_rate_for_selling_stock=0 if portfolio_name == "keren_hishtalmut" else 0.25,
-                minimal_amount_for_withdrawl=0
-            )
-        benjy = Parent(dict_of_monthly_incomes={"main_job": benjy_job}, dict_of_portfolios=benjy_dict_of_portfolios)
+        initial_incomes_params = self.config["initial"]["incomes"]
+
+
+        # benjy_job = Job(**initial_incomes_params["benjy"]["jobs"]["main_job"])
+
+
+
+        # # create benjy
+        # benjy_job = Job(
+        #         base_salary_after_taxes=18.5, 
+        #         probability_of_loosing_job=0.2, 
+        #         percentage_of_base_salary_for_stocks=0.0, 
+        #         bonus_fraction_of_annual_income=0.0, 
+        #         dollar_amount_per_year=0,
+        #         has_pension_plan=True,
+        #         has_keren_hishtalmut_plan=True,
+        #     )
+        # benjy_dict_of_portfolios = {NAME_OF_MAIN_PORTFOLION: PortFolio(amount_invested=100, minimal_amount_for_withdrawl=50)}
+        # for portfolio_name in JOB_RELATED_PORTFOLIOS:
+        #     benjy_dict_of_portfolios[portfolio_name] = PortFolio(
+        #         amount_invested=0, 
+        #         tax_rate_for_selling_stock=0 if portfolio_name == "keren_hishtalmut" else 0.25,
+        #         minimal_amount_for_withdrawl=0
+        #     )
+        # benjy = Parent(dict_of_monthly_incomes={"main_job": benjy_job}, dict_of_portfolios=benjy_dict_of_portfolios)
+
+
+        benjy_dict_of_monthly_incomes = {"main_job": Job(**initial_incomes_params["benjy"]["jobs"]["main_job"])}
+
+        # benjy_portfolio_params = 
+
+        benjy_dict_of_portfolios = {
+            portfolio_name: PortFolio(**porfolio_params) for portfolio_name, porfolio_params in initial_incomes_params["benjy"]["porfolios"].items()
+        }
+        benjy = Parent(dict_of_monthly_incomes=benjy_dict_of_monthly_incomes, dict_of_portfolios=benjy_dict_of_portfolios)
 
 
         # create inbar
@@ -89,6 +109,9 @@ class FinancialSimulator:
         inbar = Parent(dict_of_monthly_incomes={"main_job": inbar_job}, dict_of_portfolios=inbar_dict_of_portfolios)
 
 
+        
+
+
         # combine all income sources into a total incomes class
         total_incomes = TotalIncomes(dict_of_parents={"benjy": benjy, "inbar": inbar})
 
@@ -97,18 +120,18 @@ class FinancialSimulator:
 
     def get_initial_expenses(self):
         dict_of_expenses = {
-            "apartment": LocationDependentApartment(location="israel", num_kids=0),
+            "apartment": LocationDependentApartment(location=self.location, num_kids=self.num_kids),
             "bills": Bills(),
             "fun": Fun(),
             "pet": Pet(),
             "living_expenses": LivingExpenses(),
             "car": Car(payed_down_payment=True),
-            "big_family_trip": BigFamilyTrip(num_days=7, num_kids=0),
-            "small_family_trip1": SmallFamilyTrip(num_days=4, num_kids=0),
-            "weekend_trips1": WeekendTrips(num_days=2, num_kids=0),
-            "weekend_trips2": WeekendTrips(num_days=2, num_kids=0),
-            "weekend_trips3": WeekendTrips(num_days=2, num_kids=0),
-            "weekend_trips4": WeekendTrips(num_days=2, num_kids=0),
+            "big_family_trip": BigFamilyTrip(num_days=7, num_kids=self.num_kids),
+            "small_family_trip1": SmallFamilyTrip(num_days=4, num_kids=self.num_kids),
+            "weekend_trips1": WeekendTrips(num_days=2, num_kids=self.num_kids),
+            "weekend_trips2": WeekendTrips(num_days=2, num_kids=self.num_kids),
+            "weekend_trips3": WeekendTrips(num_days=2, num_kids=self.num_kids),
+            "weekend_trips4": WeekendTrips(num_days=2, num_kids=self.num_kids),
         }
         total_expenses = TotalExpenses(dict_of_expenses=dict_of_expenses)
         return total_expenses

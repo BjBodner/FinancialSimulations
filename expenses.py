@@ -328,5 +328,5 @@ class SmallFamilyTrip(FamilyTrip):
         super().__init__(num_days, num_kids, cost_per_day_per_person, flights_per_person)
 
 class WeekendTrips(FamilyTrip):
-    def __init__(self, num_kids, num_days=1, cost_per_day_per_person=0.4, flights_per_person=0):
+    def __init__(self, num_kids, num_days, cost_per_day_per_person=0.4, flights_per_person=0):
         super().__init__(num_days, num_kids, cost_per_day_per_person, flights_per_person)
