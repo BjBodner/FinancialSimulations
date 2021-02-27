@@ -148,34 +148,21 @@ class FinancialSimulator:
         self.total_expenses.increment_by_one_year() 
 
 
-    def run_simulation(self, number_of_repititions=1):
-        for current_year in range(self.num_years):
-        
-            # simulate one year
-            self.simulate_one_year()
-
-            self.apply_changes_if_needed(current_year)
 
     def apply_changes_if_needed(self, current_year):
         # TODO convert the changes to the following format
-        # self.change_incomes_if_needed()
-        # self.change_expenses_if_needed()
+        self.change_incomes_if_needed(current_year)
+        self.change_expenses_if_needed(current_year)
 
-        # self.change_jobs_if_needed()
-        # self.change_country_if_needed()
+        self.change_jobs_if_needed(current_year)
+        self.change_country_if_needed(current_year)
         
-        # if current_year == 2:
-        #     self.total_expenses.have_kid(location=self.location)
-        # if current_year == 5:
-        #     self.total_expenses.have_kid(location=self.location)
-        #     self.total_expenses.add_expense(expense_name="house", expense=House(full_price=3000, down_payment=600, monthly_payment=8))
-        #     self.total_expenses.remove_expense("apartment")
-        # if current_year == 8:
-        #     self.total_expenses.have_kid(location=self.location)
-        # if current_year == 20:
-        #     self.total_expenses.remove_expense(expense_name="big_family_trip")
+
+    def change_incomes_if_needed(self, current_year):
+        pass
 
 
+    def change_expenses_if_needed(self, current_year):
         for expense_change_name, expense_change_information in self.config["expenses_timeline"].items():
             if expense_change_information["year"] == current_year:
                 method_name = expense_change_information["method"]
@@ -190,7 +177,21 @@ class FinancialSimulator:
                     change_method(**expense_change_information["params"])
                         
 
-                # self.total_expenses.add_expense(expense_name="house", expense=House(full_price=3000, down_payment=600, monthly_payment=8))
+    def change_jobs_if_needed(self, current_year):
+        pass
+
+
+    def change_country_if_needed(self, current_year):
+        pass
+
+
+    def run_simulation(self, number_of_repititions=1):
+        for current_year in range(self.num_years):
+        
+            # simulate one year and apply any changes if needed
+            self.simulate_one_year()
+            self.apply_changes_if_needed(current_year)
+
 
     def plot_all_portfolios(self):
         self.portfolio_tracker.plot_all_portfolios(self.total_num_months, target_net_worth_for_retirement=3000)

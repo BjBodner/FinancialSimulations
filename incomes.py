@@ -59,7 +59,7 @@ class Parent(Income):
     def withdraw_from_main_portfolio(self, amount_to_withdraw):
         remaining_amount_to_withdraw = amount_to_withdraw
         total_amount_withdrawn = 0
-        for portfolio_name in [NAME_OF_MAIN_PORTFOLION, "keren_hishtalmut", "pension", "company_stock"]: # the order of portfolios to go through should be defined by the user
+        for portfolio_name in [NAME_OF_MAIN_PORTFOLION, "keren_hishtalmut", "company_stock", "pension"]: # the order of portfolios to go through should be defined by the user
             if remaining_amount_to_withdraw > 0:
                 amount_withdrawn, remaining_amount_to_withdraw = self.withdraw_from_portfolio(portfolio_name, remaining_amount_to_withdraw)
                 total_amount_withdrawn += amount_withdrawn
