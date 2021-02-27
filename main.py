@@ -86,8 +86,8 @@ def get_total_expenses():
         "weekend_trips1": WeekendTrips(num_days=2, num_kids=0),
         "weekend_trips2": WeekendTrips(num_days=2, num_kids=0),
         "weekend_trips3": WeekendTrips(num_days=2, num_kids=0),
-        "weekend_trips4": WeekendTrips(num_days=2, num_kids=0),
-        "weekend_trips5": WeekendTrips(num_days=2, num_kids=0),
+        # "weekend_trips4": WeekendTrips(num_days=2, num_kids=0),
+        # "weekend_trips5": WeekendTrips(num_days=2, num_kids=0),
     }
     total_expenses = TotalExpenses(dict_of_expenses=dict_of_expenses)
     return total_expenses
@@ -192,7 +192,10 @@ if __name__ == "__main__":
         # simulate one year
         total_incomes, total_expenses, balance_in_bank_account, portfolio_tracker, total_num_months = simulate_one_year(total_incomes, total_expenses, balance_in_bank_account, portfolio_tracker, total_num_months)
 
-        # timeline
+        # timeline 
+        # TODO make the timeline more easily managable, and make it available to save as a file
+        # TODO add a change location operation
+        # TODO add a change jobs operation
         if year == 2:
             total_expenses.have_kid(location="israel")
         if year == 5:
@@ -205,8 +208,9 @@ if __name__ == "__main__":
             total_expenses.remove_expense("big_family_trip")
 
 
-
     # plot portfolios
+    # TODO display all these in one 4-way plot, including keren hishtalmut
+    # TODO make comparisons easily available
     plot_portfolio(portfolio_tracker, total_num_months, portfolio_name=NAME_OF_MAIN_PORTFOLION, target_net_worth_for_retirement=3000)
     plot_portfolio(portfolio_tracker, total_num_months, portfolio_name="pension", target_net_worth_for_retirement=3000)
     plot_portfolio(portfolio_tracker, total_num_months, portfolio_name="net_worth", target_net_worth_for_retirement=3000)

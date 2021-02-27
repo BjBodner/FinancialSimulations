@@ -37,8 +37,37 @@ class Parent(Income):
     def invest_in_main_portfolio(self, investment):
         self.dict_of_portfolios[NAME_OF_MAIN_PORTFOLION].invest_in_portfolio(investment)
 
+    def withdraw_from_portfolio(self, portfolio_name, amount_to_withdraw):
+        portfolio = self.dict_of_portfolios[portfolio_name]
+
+        # extract the maximal amount possible from the portfolio
+        if portfolio.balance_will_remain_above_minimal_amount_after_withdrawl(amount_to_withdraw):
+            amount_withdrawn = portfolio.withdraw_from_portfolio(amount_to_withdraw)
+            remaining_amount_to_withdraw = 0
+        else:
+            reduced_amount_to_withdraw = (portfolio.total_balance - portfolio.minimal_amount_for_withdrawl) * (1 - portfolio.tax_rate_for_selling_stock)
+            if reduced_amount_to_withdraw > 0:
+                amount_withdrawn = portfolio.withdraw_from_portfolio(reduced_amount_to_withdraw)
+                remaining_amount_to_withdraw = (amount_to_withdraw - amount_withdrawn)
+            else:
+                amount_withdrawn = 0
+                remaining_amount_to_withdraw = amount_to_withdraw
+
+        return amount_withdrawn, remaining_amount_to_withdraw
+
+
     def withdraw_from_main_portfolio(self, amount_to_withdraw):
-        return self.dict_of_portfolios[NAME_OF_MAIN_PORTFOLION].withdraw_from_portfolio(amount_to_withdraw)
+        remaining_amount_to_withdraw = amount_to_withdraw
+        total_amount_withdrawn = 0
+        for portfolio_name in [NAME_OF_MAIN_PORTFOLION, "keren_hishtalmut", "pension"]: # the order of portfolios to go through should be defined by the user
+            if remaining_amount_to_withdraw > 0:
+                amount_withdrawn, remaining_amount_to_withdraw = self.withdraw_from_portfolio(portfolio_name, remaining_amount_to_withdraw)
+                total_amount_withdrawn += amount_withdrawn
+            else:
+                break
+
+        return total_amount_withdrawn
+
 
     def increment_by_one_year(self):
         for income_name in self.dict_of_monthly_incomes.keys():
@@ -86,14 +115,20 @@ class TotalIncomes:
 
 
 class PortFolio:
-    def __init__(self, amount_invested, annual_growth_percentage=5, tax_rate_for_selling_stock=0.25):
+    def __init__(self, amount_invested, annual_growth_percentage=5, minimal_amount_for_withdrawl=50, tax_rate_for_selling_stock=0.25):
         self.amount_invested = amount_invested
         self.total_balance = amount_invested
         self.tax_rate_for_selling_stock = tax_rate_for_selling_stock
+        self.minimal_amount_for_withdrawl = minimal_amount_for_withdrawl
 
         # calc monthly growth factor
         annual_growth_factor = 1 + annual_growth_percentage/100
         self.monthly_growth_factor = annual_growth_factor**(1/12)
+
+    def balance_will_remain_above_minimal_amount_after_withdrawl(self, amount_to_withdraw):
+        amount_of_stocks_to_liquidate = amount_to_withdraw / (1 - self.tax_rate_for_selling_stock)
+        expected_new_balance = (self.total_balance - amount_of_stocks_to_liquidate)
+        return (expected_new_balance > self.minimal_amount_for_withdrawl)
 
     def invest_in_portfolio(self, investment):
         self.amount_invested += investment
@@ -103,6 +138,8 @@ class PortFolio:
         amount_of_stocks_to_liquidate = amount_to_withdraw / (1 - self.tax_rate_for_selling_stock)
         self.amount_invested -= amount_of_stocks_to_liquidate
         self.total_balance -= amount_of_stocks_to_liquidate
+        if self.total_balance < self.minimal_amount_for_withdrawl:
+            raise ValueError(f"portfolio exceeeded minimal amount")
         return amount_to_withdraw
 
     def increment_by_one_month(self):
