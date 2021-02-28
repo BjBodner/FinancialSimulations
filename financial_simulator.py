@@ -197,7 +197,7 @@ class FinancialSimulator:
             self.current_repetition = current_repetition
             self.total_incomes = self.get_initial_incomes()
             self.total_expenses = self.get_initial_expenses()
-
+            self.total_num_months = 0
             for current_year in range(self.num_years):
             
                 # simulate one year and apply any changes if needed
