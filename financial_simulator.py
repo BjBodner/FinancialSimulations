@@ -27,12 +27,15 @@ from incomes import (
     Parent,
     TotalIncomes
 )
-from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker
+from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker, MultiRunTracker
 
 # TODO add multiple runs for averaging and variance analysis
 # TODO implement changes to country
 # TODO implement changing jobs
 # TODO add incomes
+# TODO enable loosing after x years
+# TODO enable saving yaml files for comparison
+# TODO change to display only one plot at a time - the net worth
 
 
 class FinancialSimulator:
@@ -41,19 +44,21 @@ class FinancialSimulator:
         self.config = self.load_config(config_path)
 
         self.total_num_months = 0 
-        self.portfolio_tracker = None
+
+        self.current_repetition = None
 
         # parse config
         self.balance_in_bank_account = self.config["simulation_params"]["balance_in_bank_account"]  # TODO load this from the config
         self.num_years = self.config["simulation_params"]["num_years"] 
+        self.number_of_repetitions = self.config["simulation_params"]["number_of_repetitions"]
         self.names_of_parents = self.config["simulation_params"]["names_of_parents"]
         self.location = self.config["initial"]["location"]
         self.num_kids = self.config["initial"]["num_kids"]
-        
+
         # initialize incomes and expenses
         self.total_incomes = self.get_initial_incomes()
         self.total_expenses = self.get_initial_expenses()
-
+        self.portfolio_tracker = MultiRunTracker(self.number_of_repetitions)
 
     def load_config(self, config_path):
         with open(config_path, "r") as fh:
@@ -120,10 +125,12 @@ class FinancialSimulator:
 
         # collect portfolio values
         all_portfolios = self.total_incomes.get_portfolios()
-        if self.portfolio_tracker is None:
-            self.portfolio_tracker = PortFolioTracker(all_portfolios)
-        else:
-            self.portfolio_tracker.add_new_values_of_portfolios(all_portfolios)
+        self.portfolio_tracker.add_new_values_of_portfolios(all_portfolios, self.current_repetition)
+        # if self.portfolio_tracker.exists(self.current_repetition) is None:
+        #     self.create_new_tracker(self.current_repetition)
+        #     # self.portfolio_tracker[self.current_repetition] = PortFolioTracker(all_portfolios)
+        # else:
+        #     self.portfolio_tracker[self.current_repetition].add_new_values_of_portfolios(all_portfolios)
 
 
     def simulate_one_year(self):
@@ -182,13 +189,25 @@ class FinancialSimulator:
         pass
 
 
-    def run_simulation(self, number_of_repititions=1):
-        for current_year in range(self.num_years):
-        
-            # simulate one year and apply any changes if needed
-            self.simulate_one_year()
-            self.apply_changes_if_needed(current_year)
+    def run_simulation(self):
+
+        for current_repetition in range(self.number_of_repetitions):
+
+            # initialize incomes and expenses
+            self.current_repetition = current_repetition
+            self.total_incomes = self.get_initial_incomes()
+            self.total_expenses = self.get_initial_expenses()
+
+            for current_year in range(self.num_years):
+            
+                # simulate one year and apply any changes if needed
+                self.simulate_one_year()
+                self.apply_changes_if_needed(current_year)
 
 
     def plot_all_portfolios(self):
         self.portfolio_tracker.plot_all_portfolios(self.total_num_months, target_net_worth_for_retirement=3000)
+
+
+    def plot_portfolio(self, portfolio_name):
+        self.portfolio_tracker.plot_portfolio(self.total_num_months, portfolio_name, target_net_worth_for_retirement=3000)
