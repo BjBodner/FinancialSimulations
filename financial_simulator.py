@@ -29,7 +29,6 @@ from incomes import (
 )
 from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker, MultiRunTracker
 
-# TODO add multiple runs for averaging and variance analysis
 # TODO implement changes to country
 # TODO implement changing jobs
 # TODO add incomes
