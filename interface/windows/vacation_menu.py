@@ -16,15 +16,20 @@ def vacation_menu():
     DEFAULT_COST_PER_DAY_PER_PERSON = {"weekend": 0.4, "small": 0.4, "big": 0.6}
     FLIGHTS_PER_PERSON = {"weekend": 0, "small": 1, "big": 3}
 
-    menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "vacation", theme=pygame_menu.themes.THEME_BLUE)
+    menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Vacation", theme=pygame_menu.themes.THEME_BLUE)
 
-    num_vacation = 1# get this from menu constructor
-    default_name = f"vacation{date_time}" # get this as input based on the number of vacations already available
-    vacation_number = 1
+    vacation_number = 1 # get this from menu constructor
+    default_name = f"vacation{vacation_number}" # get this as input based on the number of vacations already available
     vacation_type = "weekend"
 
     expense_dict = {"name": "", "expense_params": {}, "expense_type": "FamilyTrip"}
 
+    # fill in initial values - or get from constructor
+    expense_dict["name"] = default_name
+    expense_dict["expense_params"]["num_kids"] = 0
+    expense_dict["expense_params"]["num_days"] = 0
+    expense_dict["expense_params"]["cost_per_day_per_person"] = DEFAULT_COST_PER_DAY_PER_PERSON[vacation_type]
+    expense_dict["expense_params"]["flights_per_person"] = FLIGHTS_PER_PERSON[vacation_type]
 
     # all local methods
     def change_vacation_type(vacation_type_):
@@ -46,12 +51,9 @@ def vacation_menu():
         expense_dict["expense_params"]["flights_per_person"] = float(flights_per_person) if len(flights_per_person) > 0 else 0
 
     def start_the_game():
-        # if expense_dict["name"] == "":
-        #     # print(f"no name selected highlight the name button to ask the user to fill it in")
-
+        # Add here a function to write the expese dict to the global config
         print(expense_dict)
         print("add the expense to the config and save it")
-
 
     # add all widgets to fill in expense
     menu.add_text_input("Name: ", default=default_name, onchange=process_name)
@@ -63,39 +65,12 @@ def vacation_menu():
 
     # other buttons
     menu.add_vertical_margin(40)
-    menu.add_button("Add Expense", start_the_game, fontsize=32, color=(0,0,0))
-    menu.add_button("Back", pygame_menu.events.BACK)
-    menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT)
+    menu.add_button("Add Expense", start_the_game, font_size=24, font_color=(0,0,0))
+    menu.add_button("Back", pygame_menu.events.BACK, font_size=24, font_color=(0,0,0))
+    menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT, font_size=24, font_color=(0,0,0))
 
     menu.mainloop(surface)
 
 
 if __name__ == "__main__":
-    # pygame.init()
-    # surface = pygame.display.set_mode(SURFACE_SIZE)
-
-    # menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "vacation", theme=pygame_menu.themes.THEME_BLUE)
-
-    # vacation_number = 1
-    # vacation_type = "weekend"
-
-    # expense_dict = {"name": "", "expense_params": {}, "expense_type": "FamilyTrip"}
-
-
-    # # add all widgets to fill in expense
-    # menu.add_text_input("Name : ", default=f"-", onchange=process_name)
-    # menu.add_selector("Vacation type : ", [("weekend",), ("small",) , ("big",)], onchange=change_vacation_type)
-    # menu.add_text_input("Number of days : ", default="0", onchange=process_num_days, valid_chars=VALID_INT_CHARS)
-    # menu.add_text_input("Number of kids : ", default="0", onchange=process_num_kids, valid_chars=VALID_INT_CHARS)
-    # menu.add_text_input("Cost per person per day: ", default=DEFAULT_COST_PER_DAY_PER_PERSON[vacation_type], onchange=process_cost_per_day_per_person, valid_chars=VALID_FLOAT_CHARS)
-    # menu.add_text_input("Cost of flights per person : ", default=FLIGHTS_PER_PERSON[vacation_type], onchange=process_flights_per_person, valid_chars=VALID_FLOAT_CHARS)
-
-    # # other buttons
-    # menu.add_vertical_margin(40)
-    # menu.add_button("Add Expense", start_the_game)
-    # menu.add_button("Back", pygame_menu.events.BACK)
-    # menu.add_button("quit", pygame_menu.events.PYGAME_QUIT)
-
-    # menu.mainloop(surface)
-
     vacation_menu()
