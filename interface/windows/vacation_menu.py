@@ -54,7 +54,8 @@ def vacation_menu():
         # Add here a function to write the expese dict to the global config
         print(expense_dict)
         print("add the expense to the config and save it")
-
+        pygame_menu.events.BACK
+        
     # add all widgets to fill in expense
     menu.add_text_input("Name: ", default=default_name, onchange=process_name)
     menu.add_selector("Vacation type : ", [("weekend",), ("small",) , ("big",)], onchange=change_vacation_type)

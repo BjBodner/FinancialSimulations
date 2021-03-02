@@ -9,14 +9,14 @@ VALID_FLOAT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9", "."]
 VALID_INT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 
-def pet_menu():
+def living_expenses_menu():
     pygame.init()
     surface = pygame.display.set_mode(SURFACE_SIZE)
 
-    menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Pet", theme=pygame_menu.themes.THEME_BLUE)
+    menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Living Expenses", theme=pygame_menu.themes.THEME_BLUE)
 
     number = 1 # get this from menu constructor
-    default_name = f"pet{number}" # get this as input based on the number of vacations already available
+    default_name = f"living_expenses{number}" # get this as input based on the number of vacations already available
 
     expense_dict = {"name": "", "expense_params": {}, "expense_type": "Car"}
 
@@ -45,7 +45,7 @@ def pet_menu():
         print(expense_dict)
         print("add the expense to the config and save it")
         pygame_menu.events.BACK
-        
+
     # add all widgets to fill in expense
     menu.add_text_input("Name: ", default=default_name, onchange=process_name)
     # menu.add_text_input("average_car_price : ", default=default_average_price, onchange=process_average_car_price, valid_chars=VALID_INT_CHARS)
@@ -63,4 +63,4 @@ def pet_menu():
 
 
 if __name__ == "__main__":
-    pet_menu()
+    living_expenses_menu()
