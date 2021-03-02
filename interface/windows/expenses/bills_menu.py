@@ -9,28 +9,27 @@ VALID_FLOAT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9", "."]
 VALID_INT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 
-def fun_menu():
+def bills_menu():
     pygame.init()
     surface = pygame.display.set_mode(SURFACE_SIZE)
 
-    menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Fun", theme=pygame_menu.themes.THEME_BLUE)
+    menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Bills", theme=pygame_menu.themes.THEME_BLUE)
 
     number = 1 # get this from menu constructor
-    default_name = f"fun{number}" # get this as input based on the number of vacations already available
-    default_country = "israel"
+    default_name = f"bills{number}" # get this as input based on the number of vacations already available
 
-    expense_dict = {"name": "", "expense_params": {}, "expense_type": "Car"}
+    expense_dict = {"name": "", "expense_params": {}, "expense_type": "Bills"}
 
     # fill in initial values - or get from constructor
     expense_dict["name"] = default_name
-    expense_dict["expense_params"]["country"] = default_country
+    expense_dict["expense_params"]["none"] = "none"
 
     # # all local methods
     def process_name(name: str):
         expense_dict["name"] = name
         
-    def process_country(country: str):
-        expense_dict["expense_params"]["country"] = country
+    # def process_average_car_price(average_car_price: str):
+    #     expense_dict["expense_params"]["average_car_price"] = int(average_car_price) if len(average_car_price) > 0 else 0
 
     # def process_payed_down_payment(payed_down_payment):
     #     expense_dict["expense_params"]["payed_down_payment"] = payed_down_payment
@@ -49,7 +48,7 @@ def fun_menu():
         
     # add all widgets to fill in expense
     menu.add_text_input("Name: ", default=default_name, onchange=process_name)
-    menu.add_text_input("country : ", default=default_country, onchange=process_country)
+    # menu.add_text_input("average_car_price : ", default=default_average_price, onchange=process_average_car_price, valid_chars=VALID_INT_CHARS)
     # menu.add_selector("payed_down_payment : ", [("True",), ("False",)], onchange=process_payed_down_payment)
     # menu.add_text_input("starting_age_of_initial_car : ", default=default_starting_age_of_initial_car, onchange=process_starting_age_of_initial_car, valid_chars=VALID_INT_CHARS)
     # menu.add_text_input("process_average_car_lifetime : ", default=default_average_car_lifetime, onchange=process_average_car_lifetime, valid_chars=VALID_FLOAT_CHARS)
@@ -64,4 +63,4 @@ def fun_menu():
 
 
 if __name__ == "__main__":
-    fun_menu()
+    bills_menu()

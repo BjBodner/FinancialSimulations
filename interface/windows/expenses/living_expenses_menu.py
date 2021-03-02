@@ -18,7 +18,7 @@ def living_expenses_menu():
     number = 1 # get this from menu constructor
     default_name = f"living_expenses{number}" # get this as input based on the number of vacations already available
 
-    expense_dict = {"name": "", "expense_params": {}, "expense_type": "Car"}
+    expense_dict = {"name": "", "expense_params": {}, "expense_type": "LivingExpenses"}
 
     # fill in initial values - or get from constructor
     expense_dict["name"] = default_name
