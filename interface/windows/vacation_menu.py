@@ -18,8 +18,8 @@ def vacation_menu():
 
     menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Vacation", theme=pygame_menu.themes.THEME_BLUE)
 
-    vacation_number = 1 # get this from menu constructor
-    default_name = f"vacation{vacation_number}" # get this as input based on the number of vacations already available
+    number = 1 # get this from menu constructor
+    default_name = f"vacation{number}" # get this as input based on the number of vacations already available
     vacation_type = "weekend"
 
     expense_dict = {"name": "", "expense_params": {}, "expense_type": "FamilyTrip"}
