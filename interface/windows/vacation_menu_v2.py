@@ -84,9 +84,9 @@ def vacation_menu():
 
     # other buttons
     menu.add_vertical_margin(40)
-    menu.add_button("Add Expense", start_the_game)
+    menu.add_button("Add Expense", start_the_game, font_size=8, font_color=(0,0,0))
     menu.add_button("Back", pygame_menu.events.BACK)
-    menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT)
+    menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT) # remove this when we fix up the event
 
     menu.mainloop(surface)
 
