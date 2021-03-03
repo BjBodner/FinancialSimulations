@@ -15,6 +15,9 @@ def bills_menu():
 
     menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Bills", theme=pygame_menu.themes.THEME_BLUE)
 
+    menu2 = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Bills2", theme=pygame_menu.themes.THEME_BLUE)
+    menu2.add_label("this is the second menu")
+
     number = 1 # get this from menu constructor
     default_name = f"bills{number}" # get this as input based on the number of vacations already available
 
@@ -57,6 +60,7 @@ def bills_menu():
     menu.add_vertical_margin(40)
     menu.add_button("Add Expense", start_the_game, font_size=24, font_color=(0,0,0))
     menu.add_button("Back", pygame_menu.events.BACK, font_size=24, font_color=(0,0,0))
+    menu.add_button("menu2", menu2, font_size=24, font_color=(0,0,0))
     menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT, font_size=24, font_color=(0,0,0))
 
     menu.mainloop(surface)
