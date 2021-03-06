@@ -166,19 +166,21 @@ class FinancialSimulator:
 
 
     def change_expenses_if_needed(self, current_year):
-        for expense_change_name, expense_change_information in self.config["expenses_timeline"].items():
-            if expense_change_information["year"] == current_year:
-                method_name = expense_change_information["method"]
-                change_method = getattr(self.total_expenses, method_name)
+        expenses_timeline = self.config["expenses_timeline"]
+        if expenses_timeline is not None:
+            for expense_change_name, expense_change_information in self.config["expenses_timeline"].items():
+                if expense_change_information["year"] == current_year:
+                    method_name = expense_change_information["method"]
+                    change_method = getattr(self.total_expenses, method_name)
 
-                # implement the change
-                if method_name == "add_expense":
-                    params = expense_change_information["params"]
-                    expense_class = getattr(expenses, params["expense_type"])
-                    change_method(expense_name=params["expense_name"], expense=expense_class(**params["expense_params"]))
-                else:
-                    change_method(**expense_change_information["params"])
-                        
+                    # implement the change
+                    if method_name == "add_expense":
+                        params = expense_change_information["params"]
+                        expense_class = getattr(expenses, params["expense_type"])
+                        change_method(expense_name=params["expense_name"], expense=expense_class(**params["expense_params"]))
+                    else:
+                        change_method(**expense_change_information["params"])
+                            
 
     def change_jobs_if_needed(self, current_year):
         pass

@@ -2,13 +2,7 @@ import pygame
 import pygame_menu
 from datetime import datetime
 from functools import partial
-
-SURFACE_SIZE = (1000, 600)
-MENU_SIZE = (600, 700)
-VALID_FLOAT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9", "."]
-VALID_INT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-
+import yaml
 
 
 SURFACE_SIZE = (1000, 600)
@@ -102,18 +96,30 @@ class JobMenu:
 
 
 
+
+
 class CompareMenu:
 
-    def __init__(self, name):
+    def __init__(self, name, config_file="configs\job_only_config.yaml"):
         self.num_saved_offers = 10
         self.all_offers = [f"job{i}" for i in  range(self.num_saved_offers)]
         self.offers_to_compare = {}
         self.name_to_widget = {}
         self.num_rows_per_colum = self.num_saved_offers + 2
+
+        self.load_config(config_file)
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Compare Offers", columns=2, rows=self.num_rows_per_colum, theme=pygame_menu.themes.THEME_BLUE)
         # self.compare_offers_menu.add_label("this is the second menu")
         self.initialize_compare_offers_menu()
 
+    def load_config(self, config_file):
+        with open(config_file, "r") as fh:
+            config = yaml.load(fh, yaml.FullLoader)
+
+        saved_jobs = config["initial"]["incomes"]
+
+
+        print(f"number of jobs = {len(saved_jobs)}")
 
     def add_offer_to_compare_list(self, offer_name):
         # adds an offer to the compare list
@@ -156,7 +162,7 @@ class CompareMenu:
 
 class MainMenu:
 
-    def __init__(self, surface, number=1, name=None, theme=pygame_menu.themes.THEME_BLUE):
+    def __init__(self, surface, number=1, name=None, theme=pygame_menu.themes.THEME_BLUE, config_file="configs\job_only_config.yaml"):
 
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Compare offerings", theme=theme)
 
@@ -164,10 +170,11 @@ class MainMenu:
         # self.menu2 = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Bills2", theme=pygame_menu.themes.THEME_BLUE)
         # self.menu2.add_label("this is the second menu")
 
+        self.config = self.load_config(config_file)
 
-        self.new_offer_menu = JobMenu("Add Offer")
-        self.compare_offers_menu = CompareMenu("Compare Offers")
-        self.edit_income_handling_menu = CompareMenu("Compare Offers")
+        self.new_offer_menu = JobMenu("Add Offer", self.config)
+        self.compare_offers_menu = CompareMenu("Compare Offers", self.config)
+        self.edit_income_handling_menu = CompareMenu("Compare Offers", self.config) # for this just use a fixed expense type
 
 
 
@@ -193,50 +200,10 @@ class MainMenu:
         self.add_parameter_buttons_and_fields()
         self.add_navigation_buttons()
 
+    def load_config(self, config_file):
+        with open(config_file, "r") as fh:
+            return yaml.load(fh, yaml.FullLoader)
 
-    # def add_offer_to_compare_list(self, offer_name):
-    #     # adds an offer to the compare list
-    #     if offer_name not in self.offers_to_compare:
-    #         self.offers_to_compare.append(offer_name)
-    #         widget_id = str(len(self.offers_to_compare))
-    #         self.compare_offers_menu.add_button(offer_name, partial(self.remove_offer_from_compare_list, offer_name), align=pygame_menu.locals.ALIGN_RIGHT, 
-    #         font_size=20, font_color=(0,0,0),
-    #         widget_id=widget_id
-    #         )
-    #         self.name_to_widget[offer_name] = self.compare_offers_menu.get_widgets()[-1]
-
-
-    # def remove_offer_from_compare_list(self, offer_name):
-    #     # removes an offer from the compare list
-    #     self.compare_offers_menu.remove_widget(self.name_to_widget[offer_name])
-
-
-    # def initialize_compare_offers_menu(self):
-    #     self.compare_offers_menu.clear()
-    #     self.compare_offers_menu.add_label("Add offers to compare", align=pygame_menu.locals.ALIGN_LEFT, font_size=24, font_color=(0,0,0))
-
-    #     # add all the options to select
-    #     self.compare_offers_menu.add_vertical_margin(10)
-    #     for offer_name in self.all_offers:
-    #         self.compare_offers_menu.add_button(offer_name, partial(self.add_offer_to_compare_list, offer_name), align=pygame_menu.locals.ALIGN_LEFT, font_size=20, font_color=(0,0,0))
-
-    #     # add the second column
-    #     self.compare_offers_menu.add_button("Compare", self.compare_offers, align=pygame_menu.locals.ALIGN_TOP, font_size=24, 
-    #         font_color=(0,0,210), 
-    #         background_color=(200, 200, 255),
-    #     )
-    #     self.compare_offers_menu.add_vertical_margin(10)
-
-
-    # def compare_offers(self):
-    #     print(f"do comparison")
-
-
-    # def initialize_expense_dict(self):
-    #     # initialize the expense dict
-    #     self.expense_dict = {"name": "", "expense_params": {}, "expense_type": "Bills"}
-    #     self.expense_dict["name"] = self.default_name
-    #     self.expense_dict["expense_params"]["none"] = "none"
 
     def add_parameter_buttons_and_fields(self):
         # add parameter buttons and fields

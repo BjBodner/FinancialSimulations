@@ -84,7 +84,7 @@ def portfolio_menu():
     menu.add_text_input("minimal_amount_for_withdrawl : ", default=default_minimal_amount_for_withdrawl, onchange=process_minimal_amount_for_withdrawl, valid_chars=VALID_FLOAT_CHARS, font_size=24)
     # menu.add_text_input("percentage_of_base_salary_for_stocks : ", default=default_percentage_of_base_salary_for_stocks, onchange=process_percentage_of_base_salary_for_stocks, valid_chars=VALID_FLOAT_CHARS, font_size=24)
     # menu.add_text_input("bonus_fraction_of_annual_income : ", default=default_bonus_fraction_of_annual_income, onchange=process_bonus_fraction_of_annual_income, valid_chars=VALID_FLOAT_CHARS, font_size=24)
-    # menu.add_text_input("dollar_amount_per_year : ", default=default_dollar_amount_per_year, onchange=process_dollar_amount_per_year, valid_chars=VALID_FLOAT_CHARS, font_size=24)
+    # menu.add_text_input("options_per_year : ", default=default_options_per_year, onchange=process_options_per_year, valid_chars=VALID_FLOAT_CHARS, font_size=24)
 
 
     # menu.add_selector("has_keren_hishtalmut_plan : ", default=default_has_keren_hishtalmut_plan, items=[("True",), ("False",)], onchange=process_has_keren_hishtalmut_plan, font_size=24)

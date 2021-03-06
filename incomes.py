@@ -152,7 +152,7 @@ class Job(Income):
         probability_of_loosing_job=0.2, 
         percentage_of_base_salary_for_stocks=0.1, 
         bonus_fraction_of_annual_income=0.1, 
-        dollar_amount_per_year=30,
+        options_per_year=30,
         has_pension_plan=True,
         has_keren_hishtalmut_plan=True,
         has_yearly_bonuses=True,
@@ -164,7 +164,7 @@ class Job(Income):
         self.probability_of_loosing_job = probability_of_loosing_job
         self.percentage_of_base_salary_for_stocks = percentage_of_base_salary_for_stocks
         self.bonus_fraction_of_annual_income = bonus_fraction_of_annual_income
-        self.dollar_amount_per_year = dollar_amount_per_year
+        self.options_per_year = options_per_year
         self.has_pension_plan = has_pension_plan
         self.has_keren_hishtalmut_plan = has_keren_hishtalmut_plan
         self.has_yearly_bonuses = has_yearly_bonuses
@@ -245,7 +245,7 @@ class Job(Income):
         return base_salary, company_stock
 
     def options(self):
-        return self.dollar_amount_per_year / 12
+        return self.options_per_year / 12
 
     def get_bonus(self):
         base_salary = self.get_base_salary()
@@ -264,7 +264,7 @@ class GradSchoolJob(Job):
         probability_of_loosing_job=0, 
         percentage_of_base_salary_for_stocks=0.0, 
         bonus_fraction_of_annual_income=0.0, 
-        dollar_amount_per_year=0,
+        options_per_year=0,
         has_pension_plan=False,
         has_keren_hishtalmut_plan=False,
         phd=False, 
@@ -277,7 +277,7 @@ class GradSchoolJob(Job):
             probability_of_loosing_job, 
             percentage_of_base_salary_for_stocks, 
             bonus_fraction_of_annual_income, 
-            dollar_amount_per_year,
+            options_per_year,
             has_pension_plan,
             has_keren_hishtalmut_plan,
             phd, 

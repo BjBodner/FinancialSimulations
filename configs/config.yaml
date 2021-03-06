@@ -19,7 +19,7 @@ initial:
           probability_of_loosing_job: 0.2
           percentage_of_base_salary_for_stocks: 0.0
           bonus_fraction_of_annual_income: 0.0
-          dollar_amount_per_year: 0
+          options_per_year: 0
           has_pension_plan: True
           has_keren_hishtalmut_plan: True
 
@@ -53,7 +53,7 @@ initial:
           probability_of_loosing_job: 0.2
           percentage_of_base_salary_for_stocks: 0.1
           bonus_fraction_of_annual_income: 0.1
-          dollar_amount_per_year: 30
+          options_per_year: 30
           has_pension_plan: True
           has_keren_hishtalmut_plan: True
 

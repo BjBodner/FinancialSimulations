@@ -22,7 +22,7 @@ def job_menu():
     default_probability_of_loosing_job =  0.2
     default_percentage_of_base_salary_for_stocks =  0.0
     default_bonus_fraction_of_annual_income =  0.0
-    default_dollar_amount_per_year = 0
+    default_options_per_year = 0
     default_has_pension_plan = True
     default_has_keren_hishtalmut_plan =  True
 
@@ -35,7 +35,7 @@ def job_menu():
     expense_dict["job_params"]["probability_of_loosing_job"] = default_probability_of_loosing_job
     expense_dict["job_params"]["percentage_of_base_salary_for_stocks"] = default_percentage_of_base_salary_for_stocks
     expense_dict["job_params"]["bonus_fraction_of_annual_income"] = default_bonus_fraction_of_annual_income
-    expense_dict["job_params"]["dollar_amount_per_year"] = default_dollar_amount_per_year
+    expense_dict["job_params"]["options_per_year"] = default_options_per_year
     expense_dict["job_params"]["has_pension_plan"] = default_has_pension_plan
     expense_dict["job_params"]["has_keren_hishtalmut_plan"] = default_has_keren_hishtalmut_plan
 
@@ -55,8 +55,8 @@ def job_menu():
     def process_bonus_fraction_of_annual_income(bonus_fraction_of_annual_income: str):
         expense_dict["job_params"]["probability_of_loosing_job"] = float(bonus_fraction_of_annual_income) if len(bonus_fraction_of_annual_income) > 0 else 0
 
-    def process_dollar_amount_per_year(dollar_amount_per_year: str):
-        expense_dict["job_params"]["dollar_amount_per_year"] = float(dollar_amount_per_year) if len(dollar_amount_per_year) > 0 else 0
+    def process_options_per_year(options_per_year: str):
+        expense_dict["job_params"]["options_per_year"] = float(options_per_year) if len(options_per_year) > 0 else 0
 
     def process_has_pension_plan(has_pension_plan):
         expense_dict["job_params"]["has_pension_plan"] = has_pension_plan
@@ -75,7 +75,7 @@ def job_menu():
     menu.add_text_input("probability_of_loosing_job : ", default=default_probability_of_loosing_job, onchange=process_probability_of_loosing_job, valid_chars=VALID_FLOAT_CHARS, font_size=24)
     menu.add_text_input("percentage_of_base_salary_for_stocks : ", default=default_percentage_of_base_salary_for_stocks, onchange=process_percentage_of_base_salary_for_stocks, valid_chars=VALID_FLOAT_CHARS, font_size=24)
     menu.add_text_input("bonus_fraction_of_annual_income : ", default=default_bonus_fraction_of_annual_income, onchange=process_bonus_fraction_of_annual_income, valid_chars=VALID_FLOAT_CHARS, font_size=24)
-    menu.add_text_input("dollar_amount_per_year : ", default=default_dollar_amount_per_year, onchange=process_dollar_amount_per_year, valid_chars=VALID_FLOAT_CHARS, font_size=24)
+    menu.add_text_input("options_per_year : ", default=default_options_per_year, onchange=process_options_per_year, valid_chars=VALID_FLOAT_CHARS, font_size=24)
 
 
     menu.add_selector("has_pension_plan : ", default=default_has_pension_plan, items=[("True",), ("False",)], onchange=process_has_pension_plan, font_size=24)
