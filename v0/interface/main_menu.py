@@ -101,7 +101,7 @@ class CompareMenu:
     def __init__(self, name):
         self.num_saved_offers = 10
         self.all_offers = [f"job{i}" for i in  range(self.num_saved_offers)]
-        self.offers_to_compare = []
+        self.offers_to_compare = {}
         self.name_to_widget = {}
         self.num_rows_per_colum = self.num_saved_offers + 2
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Compare Offers", columns=2, rows=self.num_rows_per_colum, theme=pygame_menu.themes.THEME_BLUE)
@@ -111,12 +111,11 @@ class CompareMenu:
 
     def add_offer_to_compare_list(self, offer_name):
         # adds an offer to the compare list
-        if offer_name not in self.offers_to_compare:
-            self.offers_to_compare.append(offer_name)
-            widget_id = str(len(self.offers_to_compare))
+        if offer_name not in self.name_to_widget.keys():
+            # self.offers_to_compare[]offer_name)
             self.menu.add_button(offer_name, partial(self.remove_offer_from_compare_list, offer_name), align=pygame_menu.locals.ALIGN_RIGHT, 
             font_size=20, font_color=(0,0,0),
-            widget_id=widget_id
+            # widget_id=widget_id
             )
             self.name_to_widget[offer_name] = self.menu.get_widgets()[-1]
 
@@ -124,6 +123,7 @@ class CompareMenu:
     def remove_offer_from_compare_list(self, offer_name):
         # removes an offer from the compare list
         self.menu.remove_widget(self.name_to_widget[offer_name])
+        self.name_to_widget.pop(offer_name)
 
 
     def initialize_compare_offers_menu(self):
