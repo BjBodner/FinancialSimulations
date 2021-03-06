@@ -19,13 +19,6 @@ class BillsMenu:
         self.menu2 = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Bills2", theme=pygame_menu.themes.THEME_BLUE)
         self.menu2.add_label("this is the second menu")
 
-
-        self.new_offer_menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Add offer", theme=pygame_menu.themes.THEME_BLUE)
-        self.new_offer_menu.add_label("this is the second menu")
-
-
-
-
         # set defaults from the constructor
         self.default_name = name if name is not None else f"bills{number}"
 
