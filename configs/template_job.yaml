@@ -1,0 +1,38 @@
+
+
+
+
+
+template_job:
+  # jobs
+  jobs:
+    main_job:
+      base_salary_after_taxes: 10.5
+      probability_of_loosing_job: 0.2
+      percentage_of_base_salary_for_stocks: 0.0
+      bonus_fraction_of_annual_income: 0.0
+      options_per_year: 0
+      has_pension_plan: True
+      has_keren_hishtalmut_plan: True
+
+  # portfolios
+  porfolios:
+    main_portfolio:
+      amount_invested: 0
+      minimal_amount_for_withdrawl: 0
+
+    keren_hishtalmut:
+      amount_invested: 0
+      minimal_amount_for_withdrawl: 0
+
+    pension:
+      amount_invested: 0
+      minimal_amount_for_withdrawl: 0
+
+    company_stock:
+      amount_invested: 0
+      minimal_amount_for_withdrawl: 0
+
+    options:
+      amount_invested: 0
+      minimal_amount_for_withdrawl: 0
