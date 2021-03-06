@@ -1,0 +1,195 @@
+
+
+
+simulation_params:
+  num_years: 35
+  # names_of_parents: ["benjy", "inbar"]
+  names_of_parents: ["benjy"]
+  balance_in_bank_account: 0
+  number_of_repetitions: 3
+
+initial:
+  location: "israel"
+  num_kids: 0
+  incomes:
+    benjy:
+      # jobs
+      jobs:
+        main_job:
+          base_salary_after_taxes: 18.5
+          probability_of_loosing_job: 0.2
+          percentage_of_base_salary_for_stocks: 0.0
+          bonus_fraction_of_annual_income: 0.0
+          dollar_amount_per_year: 0
+          has_pension_plan: True
+          has_keren_hishtalmut_plan: True
+
+      # portfolios
+      porfolios:
+        main_portfolio:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+
+        keren_hishtalmut:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+
+        pension:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+
+        company_stock:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+
+        options:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+
+    # inbar:
+    #   # jobs
+    #   jobs:
+    #     main_job:
+    #       base_salary_after_taxes: 16.7
+    #       probability_of_loosing_job: 0.2
+    #       percentage_of_base_salary_for_stocks: 0.1
+    #       bonus_fraction_of_annual_income: 0.1
+    #       dollar_amount_per_year: 30
+    #       has_pension_plan: True
+    #       has_keren_hishtalmut_plan: True
+
+    #   # portfolios
+    #   porfolios:
+    #     main_portfolio:
+    #       amount_invested: 40
+    #       minimal_amount_for_withdrawl: 50
+
+    #     keren_hishtalmut:
+    #       amount_invested: 0
+    #       minimal_amount_for_withdrawl: 0
+
+    #     pension:
+    #       amount_invested: 0
+    #       minimal_amount_for_withdrawl: 0
+
+    #     company_stock:
+    #       amount_invested: 0
+    #       minimal_amount_for_withdrawl: 0
+
+    #     options:
+    #       amount_invested: 0
+    #       minimal_amount_for_withdrawl: 0
+
+
+  expenses:
+    # apartment: 
+    #   expense_type: "LocationDependentApartment"
+    #   expense_params:
+    #     location: "israel"
+    #     num_kids: 0
+
+    # bills: 
+    #   expense_type: "Bills"
+    #   expense_params:
+    #     none: none
+
+    # fun: 
+    #   expense_type: "Fun"
+    #   expense_params:
+    #     none: none
+
+    # pet:
+    #   expense_type: "Pet"
+    #   expense_params:
+    #     none: none
+
+    # living_expenses:
+    #   expense_type: "LivingExpenses"
+    #   expense_params:
+    #     none: none
+
+    # car1:
+    #   expense_type: "Car"
+    #   expense_params:
+    #     payed_down_payment: True
+
+    # big_family_trip1:
+    #   expense_type: "BigFamilyTrip"
+    #   expense_params:
+    #     num_days: 7
+    #     num_kids: 0
+
+    # small_family_trip1:
+    #   expense_type: "SmallFamilyTrip"
+    #   expense_params:
+    #     num_days: 4
+    #     num_kids: 0
+
+    # weekend_trips1:
+    #   expense_type: "WeekendTrips"
+    #   expense_params:
+    #     num_days: 2
+    #     num_kids: 0
+
+    # weekend_trips2:
+    #   expense_type: "WeekendTrips"
+    #   expense_params:
+    #     num_days: 2
+    #     num_kids: 0
+
+    # weekend_trips3:
+    #   expense_type: "WeekendTrips"
+    #   expense_params:
+    #     num_days: 2
+    #     num_kids: 0
+
+    # weekend_trips4:
+    #   expense_type: "WeekendTrips"
+    #   expense_params:
+    #     num_days: 2
+    #     num_kids: 0
+        
+
+
+
+expenses_timeline:
+  # first_kid: 
+  #   year: 2
+  #   method: have_kid
+  #   params: 
+  #     location: israel
+
+  # second_kid: 
+  #   year: 5
+  #   method: have_kid
+  #   params: 
+  #     location: israel
+
+  # third_kid: 
+  #   year: 8
+  #   method: have_kid
+  #   params: 
+  #     location: israel
+
+  # buy_house:
+  #   year: 5
+  #   method: add_expense
+  #   params:
+  #     expense_name: "house"
+  #     expense_type: "House"
+  #     expense_params:
+  #       full_price: 3000
+  #       down_payment: 600
+  #       monthly_payment: 8
+
+  # move_out_of_apartment:
+  #   year: 5
+  #   method: remove_expense
+  #   params:
+  #     expense_name: "apartment"
+
+  # stop_having_big_family_trips:
+  #   year: 20
+  #   method: remove_expense
+  #   params:
+  #     expense_name: "big_family_trip1"

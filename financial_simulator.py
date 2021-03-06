@@ -93,10 +93,10 @@ class FinancialSimulator:
      
         initial_expenses = self.config["initial"]["expenses"]
         dict_of_expenses = {}
-        for expense_name, expense_params in initial_expenses.items():
-          
-                expense_class = getattr(expenses, expense_params["expense_type"])
-                dict_of_expenses[expense_name] = expense_class(**expense_params["expense_params"])
+        if initial_expenses is not None:
+            for expense_name, expense_params in initial_expenses.items():
+                    expense_class = getattr(expenses, expense_params["expense_type"])
+                    dict_of_expenses[expense_name] = expense_class(**expense_params["expense_params"])
 
         total_expenses = TotalExpenses(dict_of_expenses=dict_of_expenses)
 
@@ -109,7 +109,7 @@ class FinancialSimulator:
         self.balance_in_bank_account += remaining_cash
 
         # invest or withdraw the remainder
-        for parent_name in NAMES_OF_PARENTS:
+        for parent_name in self.names_of_parents:
             if remaining_cash > 0:
                 amount_to_invest = remaining_cash/2
                 self.total_incomes.invest_in_main_portfolio(parent_name, investment=amount_to_invest)
