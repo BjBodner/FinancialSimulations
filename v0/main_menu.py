@@ -14,13 +14,16 @@ TEMPLATE_JOB_PATH = r"configs\template_job.yaml"
 with open(TEMPLATE_JOB_PATH, "r") as fh:
     TEMPLATE_JOB = yaml.load(fh, yaml.FullLoader)
 
+STR_2_BOOL = {"True": True, "False": False}
+
 
 class JobMenu:
 
     def __init__(self, name, global_config, config_file):
             
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], name, theme=pygame_menu.themes.THEME_BLUE)
-        # self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config)
+        self.compare_offers_menu = CompareMenu("Compare Offers", global_config)
+        self.remove_offers_menu = RemoveMenu("Remove Offers", global_config, config_file)
 
         self.global_config = global_config
         self.config_file = config_file
@@ -92,10 +95,10 @@ class JobMenu:
         self.job_dict["job_params"]["options_per_year"] = float(options_per_year) if len(options_per_year) > 0 else 0
 
     def process_has_pension_plan(self, has_pension_plan):
-        self.job_dict["job_params"]["has_pension_plan"] = has_pension_plan
+        self.job_dict["job_params"]["has_pension_plan"] = STR_2_BOOL[has_pension_plan[0][0]]
 
     def process_has_keren_hishtalmut_plan(self, has_keren_hishtalmut_plan):
-        self.job_dict["job_params"]["has_keren_hishtalmut_plan"] = has_keren_hishtalmut_plan
+        self.job_dict["job_params"]["has_keren_hishtalmut_plan"] = STR_2_BOOL[has_keren_hishtalmut_plan[0][0]]
 
     def add_income(self):
         # Add here a function to write the expese dict to the global config
@@ -109,16 +112,19 @@ class JobMenu:
         self.global_config["simulation_params"]["names_of_parents"].append(name)
 
 
-        # return to main menu
+        # overwrite yaml file
         with open(self.config_file, "w") as fh:
             yaml.dump(self.global_config, fh)
 
-        # self.menu.add_label = CompareMenu("Compare Offers", self.config)
+        # printout successfullly added to global config
         self.menu.add_vertical_margin(20)
         self.menu.add_label("Added offer to saved offers!", align=pygame_menu.locals.ALIGN_CENTER, font_size=30, font_color=(0,200,0))
 
         # reinitialize compare menu
+        self.menu._remove_submenu(self.compare_offers_menu)
+        del self.compare_offers_menu
         self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config)
+
 
 
 class CompareMenu:
@@ -140,7 +146,83 @@ class CompareMenu:
         self.initialize_temporary_config()
 
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Compare Offers", columns=2, rows=self.num_rows_per_colum, theme=pygame_menu.themes.THEME_BLUE)
-        # self.compare_offers_menu.add_label("this is the second menu")
+        self.initialize_compare_offers_menu()
+
+    def initialize_temporary_config(self):
+        self.temporary_config = copy.deepcopy(self.global_config)
+        self.temporary_config["initial"]["incomes"] = {}
+
+
+    def add_offer_to_compare_list(self, offer_name):
+        # adds an offer to the compare list
+        if offer_name not in self.name_to_widget.keys():
+            # self.offers_to_compare[]offer_name)
+            self.menu.add_button(offer_name, partial(self.remove_offer_from_compare_list, offer_name), align=pygame_menu.locals.ALIGN_RIGHT, 
+            font_size=20, font_color=(0,0,0),
+            # widget_id=widget_id
+            )
+            self.name_to_widget[offer_name] = self.menu.get_widgets()[-1]
+
+            # TODO add the details of the config we selected to a temporary config we will run
+            self.temporary_config["initial"]["incomes"][offer_name] = copy.deepcopy(self.global_config["initial"]["incomes"][offer_name])
+            
+
+    def remove_offer_from_compare_list(self, offer_name):
+        # removes an offer from the compare list
+        self.menu.remove_widget(self.name_to_widget[offer_name])
+        self.name_to_widget.pop(offer_name)
+        self.temporary_config["initial"]["incomes"].pop(offer_name)
+
+
+    def initialize_compare_offers_menu(self):
+        self.menu.clear()
+        self.menu.add_label("Add offers to compare", align=pygame_menu.locals.ALIGN_LEFT, font_size=24, font_color=(0,0,0))
+
+        # add all the options to select
+        self.menu.add_vertical_margin(10)
+        for offer_name in self.all_offers:
+            self.menu.add_button(offer_name, partial(self.add_offer_to_compare_list, offer_name), align=pygame_menu.locals.ALIGN_LEFT, font_size=20, font_color=(0,0,0))
+
+        # add the second column
+        self.menu.add_button("Compare", self.compare_offers, align=pygame_menu.locals.ALIGN_TOP, font_size=24, 
+            font_color=(0,0,210), 
+            background_color=(200, 200, 255),
+        )
+        self.menu.add_vertical_margin(10)
+
+
+    def compare_offers(self):
+
+        # TODO
+        # save the temprary config to file
+        # run the main algorithm with the temprary config
+        # save the plot to a place
+        # display the image in the menu
+
+        print(f"do comparison")
+
+
+
+class RemoveMenu:
+
+    def __init__(self, name, global_config, config_file):
+
+        # self.num_saved_offers = 10
+        # self.all_offers = [f"job{i}" for i in  range(self.num_saved_offers)]
+
+        self.num_saved_offers = len(global_config["initial"]["incomes"])
+        self.all_offers = list(global_config["initial"]["incomes"].keys())
+
+
+        self.offers_to_compare = {}
+        self.name_to_widget = {}
+        self.num_rows_per_colum = self.num_saved_offers + 2
+
+        self.global_config = global_config
+        self.config_file = config_file
+        self.initialize_temporary_config()
+
+        self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Compare Offers", columns=2, rows=self.num_rows_per_colum, theme=pygame_menu.themes.THEME_BLUE)
         self.initialize_compare_offers_menu()
 
     def initialize_temporary_config(self):
@@ -178,19 +260,27 @@ class CompareMenu:
             self.menu.add_button(offer_name, partial(self.add_offer_to_compare_list, offer_name), align=pygame_menu.locals.ALIGN_LEFT, font_size=20, font_color=(0,0,0))
 
         # add the second column
-        self.menu.add_button("Compare", self.compare_offers, align=pygame_menu.locals.ALIGN_TOP, font_size=24, 
-            font_color=(0,0,210), 
+        self.menu.add_button("Remove", self.remove_offers, align=pygame_menu.locals.ALIGN_TOP, font_size=24, 
+            font_color=(210,0,0), 
             background_color=(200, 200, 255),
         )
         self.menu.add_vertical_margin(10)
 
 
-    def compare_offers(self):
-        # TODO
-        # save the temprary config to file
-        # run the main algorithm with the temprary config
-        # save the plot to a place
-        # display the image in the menu
+    def remove_offers(self):
+
+        # remove offer from global config
+        for offer_name in self.name_to_widget.keys():
+            I = [i for i, name in enumerate(self.global_config["simulation_params"]["names_of_parents"]) if name == offer_name][0]
+            self.global_config["simulation_params"]["names_of_parents"].pop(I)
+            del self.global_config["initial"]["incomes"][offer_name]
+
+        with open(self.config_file, "w") as fh:
+            yaml.dump(self.global_config, fh)
+
+        # printout successfullly added to global config
+        self.menu.add_vertical_margin(20)
+        self.menu.add_label("removed offer from saved offers!", align=pygame_menu.locals.ALIGN_CENTER, font_size=30, font_color=(200, 0,0))
 
         print(f"do comparison")
 
@@ -208,7 +298,7 @@ class MainMenu:
 
         self.config = self.load_config(config_file)
 
-        self.add_offer_menu = JobMenu("Add Offer", self.config, config_file)
+        self.job_menu = JobMenu("Add Offer", self.config, config_file)
         self.compare_offers_menu = CompareMenu("Compare Offers", self.config)
         self.edit_income_handling_menu = CompareMenu("Compare Offers", self.config) # for this just use a fixed expense type
 
@@ -240,17 +330,15 @@ class MainMenu:
         with open(config_file, "r") as fh:
             return yaml.load(fh, yaml.FullLoader)
 
-    def add_offer(self):
 
-        return self.add_offer_menu.menu
-        
 
     def add_parameter_buttons_and_fields(self):
         # add parameter buttons and fields
         # self.menu.add_text_input("Name: ", default=self.default_name, onchange=self.process_name)
         self.menu.add_button("Edit Income Handling", self.edit_income_handling_menu.menu, font_size=24, font_color=(0,0,0))
-        self.menu.add_button("Add Offer", self.add_offer_menu.menu, font_size=24, font_color=(0,0,0))
-        self.menu.add_button("Compare Offers", self.compare_offers_menu.menu, font_size=24, font_color=(0,0,0))
+        self.menu.add_button("Add Offer", self.job_menu.menu, font_size=24, font_color=(0,0,0))
+        self.menu.add_button("Remove Offer", self.job_menu.remove_offers_menu.menu, font_size=24, font_color=(0,0,0))
+        self.menu.add_button("Compare Offers", self.job_menu.compare_offers_menu.menu, font_size=24, font_color=(0,0,0)) # #TODO fix so that it doesn't just copy the instantiation but also updates the version of this menu
         
 
 
@@ -260,15 +348,15 @@ class MainMenu:
         # self.menu.add_button("Add Expense", self.start_the_game, font_size=24, font_color=(0,0,0))
         self.menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT, font_size=24, font_color=(0,0,0))
 
-        # # all local methods
-    def process_name(self, name: str):
-        self.expense_dict["name"] = name
+    #     # # all local methods
+    # def process_name(self, name: str):
+    #     self.expense_dict["name"] = name
         
-    def start_the_game(self):
-        # Add here a function to write the expese dict to the global config
-        print(self.expense_dict)
-        print("add the expense to the config and save it")
-        pygame_menu.events.BACK
+    # def start_the_game(self):
+    #     # Add here a function to write the expese dict to the global config
+    #     print(self.expense_dict)
+    #     print("add the expense to the config and save it")
+    #     pygame_menu.events.BACK
             
     def run(self):
         self.menu.mainloop(surface)
