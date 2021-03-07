@@ -135,6 +135,8 @@ class FinancialSimulator:
     def simulate_one_year(self):
         for month in range(12):
 
+            # TODO make this per job \ per parent
+
             # get incomes and expenses
             monthly_incomes = self.total_incomes.get_monthly_incomes()
             monthly_expenses = self.total_expenses.get_monthly_expenses()

@@ -94,6 +94,7 @@ class TotalIncomes:
             self.dict_of_parents[parent_name].increment_by_one_month()
 
     def get_monthly_incomes(self):
+        # TODO output a dict of the incomes per parent
         total_income = 0
         for parent_name in self.dict_of_parents.keys():
             total_income += self.dict_of_parents[parent_name].get_monthly_incomes()

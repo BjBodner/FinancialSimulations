@@ -4,6 +4,16 @@ from datetime import datetime
 from functools import partial
 import yaml
 import copy
+import os 
+import sys
+from pathlib import Path
+
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+sys.path.append("\\".join(os.path.dirname(__file__).split("\\")[:-1]))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../"))
+
+from financial_simulator import FinancialSimulator
+
 
 SURFACE_SIZE = (1000, 600)
 MENU_SIZE = (600, 700)
@@ -23,7 +33,7 @@ class SimulationSettingsMenu:
     def __init__(self, name, global_config, config_file):
             
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], name, theme=pygame_menu.themes.THEME_BLUE)
-        self.compare_offers_menu = CompareMenu("Compare Offers", global_config)
+        self.compare_offers_menu = CompareMenu("Compare Offers", global_config, config_file)
         self.remove_offers_menu = RemoveMenu("Remove Offers", global_config, config_file)
 
         self.global_config = global_config
@@ -124,7 +134,7 @@ class SimulationSettingsMenu:
         # reinitialize compare menu
         self.menu._remove_submenu(self.compare_offers_menu)
         del self.compare_offers_menu
-        self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config)
+        self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config, self.config_file)
 
 
         # add button to main menu
@@ -137,7 +147,7 @@ class JobMenu:
     def __init__(self, name, global_config, config_file, main_menu_object):
             
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], name, theme=pygame_menu.themes.THEME_BLUE)
-        self.compare_offers_menu = CompareMenu("Compare Offers", global_config)
+        self.compare_offers_menu = CompareMenu("Compare Offers", global_config, config_file)
         self.remove_offers_menu = RemoveMenu("Remove Offers", global_config, config_file, main_menu_object)
 
         self.global_config = global_config
@@ -196,7 +206,7 @@ class JobMenu:
         self.job_dict["name"] = name
         
     def process_base_salary_after_taxes(self, base_salary_after_taxes: str):
-        self.job_dict["job_params"]["base_salary_after_taxes"] = int(base_salary_after_taxes) if len(base_salary_after_taxes) > 0 else 0
+        self.job_dict["job_params"]["base_salary_after_taxes"] = float(base_salary_after_taxes) if len(base_salary_after_taxes) > 0 else 0
 
     def process_probability_of_loosing_job(self, probability_of_loosing_job: str):
         self.job_dict["job_params"]["probability_of_loosing_job"] = float(probability_of_loosing_job) if len(probability_of_loosing_job) > 0 else 0
@@ -239,7 +249,7 @@ class JobMenu:
         # reinitialize compare menu
         self.menu._remove_submenu(self.compare_offers_menu)
         del self.compare_offers_menu
-        self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config)
+        self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config, self.config_file)
 
         # reinitialize remove menu
         self.menu._remove_submenu(self.remove_offers_menu)
@@ -258,7 +268,7 @@ class JobMenu:
 
 class CompareMenu:
 
-    def __init__(self, name, global_config):
+    def __init__(self, name, global_config, config_file):
 
         # self.num_saved_offers = 10
         self.num_saved_offers = len(global_config["initial"]["incomes"])
@@ -269,6 +279,7 @@ class CompareMenu:
         self.name_to_widget = {}
         self.num_rows_per_colum = self.num_saved_offers + 2
 
+        self.config_file = config_file
         self.global_config = global_config
         self.initialize_temporary_config()
 
@@ -278,6 +289,7 @@ class CompareMenu:
     def initialize_temporary_config(self):
         self.temporary_config = copy.deepcopy(self.global_config)
         self.temporary_config["initial"]["incomes"] = {}
+        self.temporary_config["simulation_params"]["names_of_parents"] = []
 
 
     def add_offer_to_compare_list(self, offer_name):
@@ -292,13 +304,18 @@ class CompareMenu:
 
             # TODO add the details of the config we selected to a temporary config we will run
             self.temporary_config["initial"]["incomes"][offer_name] = copy.deepcopy(self.global_config["initial"]["incomes"][offer_name])
-            
+            self.temporary_config["simulation_params"]["names_of_parents"].append(offer_name)
 
     def remove_offer_from_compare_list(self, offer_name):
         # removes an offer from the compare list
         self.menu.remove_widget(self.name_to_widget[offer_name])
         self.name_to_widget.pop(offer_name)
         self.temporary_config["initial"]["incomes"].pop(offer_name)
+
+        self.temporary_config["simulation_params"]["names_of_parents"] = []
+        for offer_name in self.temporary_config["initial"]["incomes"].keys():
+            self.temporary_config["simulation_params"]["names_of_parents"].append(offer_name)
+
 
 
     def initialize_compare_offers_menu(self):
@@ -325,6 +342,19 @@ class CompareMenu:
         # run the main algorithm with the temprary config
         # save the plot to a place
         # display the image in the menu
+
+        dirname = os.path.dirname(self.config_file)
+        temp_config_file = str(Path(dirname, "temp.yaml"))
+
+        # save config
+        with open(temp_config_file, "w") as fh:
+            yaml.dump(self.temporary_config, fh)
+
+        # config_path = "configs\job_only_config.yaml"
+        financial_simulator = FinancialSimulator(temp_config_file)
+        financial_simulator.run_simulation()
+        # financial_simulator.plot_all_portfolios()
+        financial_simulator.plot_portfolio("net_worth")
 
         print(f"do comparison")
 
@@ -426,7 +456,7 @@ class MainMenu:
         self.config = self.load_config(config_file)
 
         self.job_menu = JobMenu("Add Offer", self.config, config_file, self)
-        self.edit_income_handling_menu = CompareMenu("Compare Offers", self.config) # for this just use a fixed expense type
+        self.edit_income_handling_menu = CompareMenu("Compare Offers", self.config, config_file) # for this just use a fixed expense type
         self.menu_name_to_widget = {}
 
         # set defaults from the constructor
