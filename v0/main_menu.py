@@ -10,17 +10,20 @@ MENU_SIZE = (600, 700)
 VALID_FLOAT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9", "."]
 VALID_INT_CHARS = ["0", "1", "2", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-TEMPLATE_JOB_PATH = "configs\template_job.yaml"
+TEMPLATE_JOB_PATH = r"configs\template_job.yaml"
 with open(TEMPLATE_JOB_PATH, "r") as fh:
     TEMPLATE_JOB = yaml.load(fh, yaml.FullLoader)
 
 
 class JobMenu:
 
-    def __init__(self, name, global_config):
+    def __init__(self, name, global_config, config_file):
             
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], name, theme=pygame_menu.themes.THEME_BLUE)
+        # self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config)
+
         self.global_config = global_config
+        self.config_file = config_file
 
         # set defaults
         number = 1 # get this from menu constructor
@@ -98,12 +101,24 @@ class JobMenu:
         # Add here a function to write the expese dict to the global config
         print(self.job_dict)
         print("add the expense to the config and save it")
+
         # add the income to the config of all the saved incomes - the name is the job name
         name = self.job_dict["name"]
-        self.global_config["initial"]["incomes"][name] = copy.deepcopy(TEMPLATE_JOB) # TODO make a template job
+        self.global_config["initial"]["incomes"][name] = copy.deepcopy(TEMPLATE_JOB)["template_job"] 
         self.global_config["initial"]["incomes"][name]["jobs"]["main_job"] = {**self.job_dict["job_params"]}
-        print(self.global_config)
+        self.global_config["simulation_params"]["names_of_parents"].append(name)
 
+
+        # return to main menu
+        with open(self.config_file, "w") as fh:
+            yaml.dump(self.global_config, fh)
+
+        # self.menu.add_label = CompareMenu("Compare Offers", self.config)
+        self.menu.add_vertical_margin(20)
+        self.menu.add_label("Added offer to saved offers!", align=pygame_menu.locals.ALIGN_CENTER, font_size=30, font_color=(0,200,0))
+
+        # reinitialize compare menu
+        self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config)
 
 
 class CompareMenu:
@@ -183,7 +198,7 @@ class CompareMenu:
 
 class MainMenu:
 
-    def __init__(self, surface, number=1, name=None, theme=pygame_menu.themes.THEME_BLUE, config_file="configs\job_only_config.yaml"):
+    def __init__(self, surface, number=1, name=None, theme=pygame_menu.themes.THEME_BLUE, config_file=r"configs\dev_config.yaml"):
 
         self.menu = pygame_menu.Menu(MENU_SIZE[0], MENU_SIZE[1], "Compare offerings", theme=theme)
 
@@ -193,7 +208,7 @@ class MainMenu:
 
         self.config = self.load_config(config_file)
 
-        self.add_offer_menu = JobMenu("Add Offer", self.config)
+        self.add_offer_menu = JobMenu("Add Offer", self.config, config_file)
         self.compare_offers_menu = CompareMenu("Compare Offers", self.config)
         self.edit_income_handling_menu = CompareMenu("Compare Offers", self.config) # for this just use a fixed expense type
 
@@ -225,6 +240,10 @@ class MainMenu:
         with open(config_file, "r") as fh:
             return yaml.load(fh, yaml.FullLoader)
 
+    def add_offer(self):
+
+        return self.add_offer_menu.menu
+        
 
     def add_parameter_buttons_and_fields(self):
         # add parameter buttons and fields
