@@ -28,7 +28,33 @@ initial:
         pension:
           amount_invested: 0
           minimal_amount_for_withdrawl: 0
-    job1:
+    job2:
+      jobs:
+        main_job:
+          base_salary_after_taxes: 18.5
+          bonus_fraction_of_annual_income: 0.0
+          has_keren_hishtalmut_plan: false
+          has_pension_plan: false
+          options_per_year: 0
+          percentage_of_base_salary_for_stocks: 0.0
+          probability_of_loosing_job: 0.2
+      porfolios:
+        company_stock:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        keren_hishtalmut:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        main_portfolio:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        options:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        pension:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+    job5:
       jobs:
         main_job:
           base_salary_after_taxes: 18.5
@@ -60,6 +86,7 @@ simulation_params:
   balance_in_bank_account: 0
   names_of_parents:
   - benjy
-  - job1
+  - job5
+  - job2
   num_years: 35
   number_of_repetitions: 3

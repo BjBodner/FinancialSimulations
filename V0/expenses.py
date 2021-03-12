@@ -181,6 +181,14 @@ class FixedPriceApartment(Expense):
     def get_expense(self):
         return self.monthly_payment
 
+class FixedMonthlyExpense(Expense):
+    def __init__(self, monthly_expense):
+        super().__init__() 
+        self.monthly_expense = monthly_expense
+
+    def get_expense(self):
+        return self.monthly_expense
+
 
 class LocationDependentApartment(Expense):
     def __init__(self, location, num_kids):

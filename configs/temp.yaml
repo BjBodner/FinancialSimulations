@@ -59,7 +59,7 @@ initial:
 simulation_params:
   balance_in_bank_account: 0
   names_of_parents:
-  - benjy
   - job1
+  - benjy
   num_years: 35
   number_of_repetitions: 3
