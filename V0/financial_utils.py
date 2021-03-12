@@ -49,11 +49,11 @@ class PortFolioTracker:
                 return self.portflio_trackers[parent_name][portfolio_name]
 
         
-    def plot_portfolio(self, total_num_months, portfolio_name, target_net_worth_for_retirement=3000):
+    def plot_portfolio(self, total_num_months, portfolio_name, names_of_parents, target_net_worth_for_retirement=3000):
         years = np.linspace(0, total_num_months/12, total_num_months)
         retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
 
-        for parent_name in NAMES_OF_PARENTS:
+        for parent_name in names_of_parents:
             # if portfolio_name == "net_worth":
             #     portfolio_balance = self.get_net_worth(parent_name)
             # else:
@@ -63,38 +63,38 @@ class PortFolioTracker:
             plt.plot(years, portfolio_balance)
 
         plt.plot(years, retirment_target, "--k")
-        plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
+        plt.legend(names_of_parents + ["target net worth for retirement"])
         plt.xlabel("years")
         plt.ylabel("balance (thousands of shekels)")
         plt.title(f"{portfolio_name} balance throughout the years")
         plt.show()
 
 
-    def plot_portfolio_(self, portfolio_balances, portfolio_name, target_net_worth_for_retirement=3000):
+    # def plot_portfolio_(self, portfolio_balances, portfolio_name, target_net_worth_for_retirement=3000):
 
-        total_num_months = len()
-        years = np.linspace(0, total_num_months/12, total_num_months)
-        retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
+    #     total_num_months = len()
+    #     years = np.linspace(0, total_num_months/12, total_num_months)
+    #     retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
 
-        for parent_name in portfolio_balances.keys():
-            # if portfolio_name == "net_worth":
-            #     portfolio_balance = self.get_net_worth(parent_name)
-            # else:
-            #     portfolio_balance = self.portflio_trackers[parent_name][portfolio_name]
+    #     for parent_name in portfolio_balances.keys():
+    #         # if portfolio_name == "net_worth":
+    #         #     portfolio_balance = self.get_net_worth(parent_name)
+    #         # else:
+    #         #     portfolio_balance = self.portflio_trackers[parent_name][portfolio_name]
 
-            # portfolio_balance = self.get_portfolio_balance(parent_name, portfolio_name)
+    #         # portfolio_balance = self.get_portfolio_balance(parent_name, portfolio_name)
 
 
-            portfolio_balance = portfolio_balances[parent_name]["expected_balance"] # assuming all the arrays are the same length and None values have been handled
-            balance_error = portfolio_balances[parent_name]["error"] 
-            plt.errorbar(years, portfolio_balance, yerr=balance_error)
+    #         portfolio_balance = portfolio_balances[parent_name]["expected_balance"] # assuming all the arrays are the same length and None values have been handled
+    #         balance_error = portfolio_balances[parent_name]["error"] 
+    #         plt.errorbar(years, portfolio_balance, yerr=balance_error)
 
-        plt.plot(years, retirment_target, "--k")
-        plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
-        plt.xlabel("years")
-        plt.ylabel("balance (thousands of shekels)")
-        plt.title(f"{portfolio_name} balance throughout the years")
-        plt.show()
+    #     plt.plot(years, retirment_target, "--k")
+    #     plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
+    #     plt.xlabel("years")
+    #     plt.ylabel("balance (thousands of shekels)")
+    #     plt.title(f"{portfolio_name} balance throughout the years")
+    #     plt.show()
 
 
     def plot_all_portfolios(self, total_num_months, target_net_worth_for_retirement=3000):
@@ -161,21 +161,15 @@ class MultiRunTracker:
         years = np.linspace(0, total_num_months/12, total_num_months)
         retirment_target = target_net_worth_for_retirement * np.ones(total_num_months)
 
-        for parent_name in portfolio_balances.keys():
-            # if portfolio_name == "net_worth":
-            #     portfolio_balance = self.get_net_worth(parent_name)
-            # else:
-            #     portfolio_balance = self.portflio_trackers[parent_name][portfolio_name]
-
-            # portfolio_balance = self.get_portfolio_balance(parent_name, portfolio_name)
-
-
+        parent_names = list(portfolio_balances.keys())
+        for parent_name in parent_names:
             portfolio_balance = portfolio_balances[parent_name]["expected_balance"] # assuming all the arrays are the same length and None values have been handled
             balance_error = portfolio_balances[parent_name]["error"] 
             plt.errorbar(years, portfolio_balance, yerr=balance_error)
 
         plt.plot(years, retirment_target, "--k")
-        plt.legend(NAMES_OF_PARENTS + ["target net worth for retirement"])
+        # plt.legend(parent_names + ["target net worth for retirement"])
+        plt.legend(["target net worth for retirement"] + parent_names)
         plt.xlabel("years")
         plt.ylabel("balance (thousands of shekels)")
         plt.title(f"{portfolio_name} balance throughout the years")

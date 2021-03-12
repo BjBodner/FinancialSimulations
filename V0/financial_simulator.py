@@ -27,7 +27,7 @@ from incomes import (
     Parent,
     TotalIncomes
 )
-from utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker, MultiRunTracker
+from financial_utils import NAME_OF_MAIN_PORTFOLION, JOB_RELATED_PORTFOLIOS, NAMES_OF_PARENTS, PortFolioTracker, MultiRunTracker
 
 # TODO implement changes to country
 # TODO implement changing jobs
@@ -51,6 +51,7 @@ class FinancialSimulator:
         self.num_years = self.config["simulation_params"]["num_years"] 
         self.number_of_repetitions = self.config["simulation_params"]["number_of_repetitions"]
         self.names_of_parents = self.config["simulation_params"]["names_of_parents"]
+        self.balance_in_bank_account_for_each_parent = {name : self.balance_in_bank_account for name in self.names_of_parents}
         self.location = self.config["initial"]["location"]
         self.num_kids = self.config["initial"]["num_kids"]
 
@@ -103,7 +104,7 @@ class FinancialSimulator:
         return total_expenses
 
 
-    def handle_incomes_and_expenses(self, monthly_incomes, monthly_expenses):
+    def handle_shared_incomes_and_shared_expenses(self, monthly_incomes, monthly_expenses):
         # handle incomes and expenses
         remaining_cash = (monthly_incomes - monthly_expenses)
         self.balance_in_bank_account += remaining_cash
@@ -118,31 +119,66 @@ class FinancialSimulator:
                 amount_to_withdraw = abs(remaining_cash/2)
                 amount_to_withdraw = self.total_incomes.withdraw_from_main_portfolio(parent_name, amount_to_withdraw=amount_to_withdraw)       # this is for equal withdraw which is probablly NOT the best strategy
                 self.balance_in_bank_account += amount_to_withdraw
-
+    
         if self.balance_in_bank_account < -10:
             raise ValueError("Bank account balance out of bounds")
+
+
+    def handle_seperate_incomes_and_seperate_expenses(self, parent_incomes, monthly_expenses):
+
+        for parent_name in self.names_of_parents:
+            # get bank acount balance and income
+            balance_in_bank_account = self.balance_in_bank_account_for_each_parent[parent_name]
+            monthly_incomes = parent_incomes[parent_name]
+
+            # handle incomes and expenses
+            remaining_cash = (monthly_incomes - monthly_expenses)
+            balance_in_bank_account += remaining_cash
+
+            # invest or withdraw the remainder
+            # for parent_name in self.names_of_parents:
+            if remaining_cash > 0:
+                amount_to_invest = remaining_cash
+                self.total_incomes.invest_in_main_portfolio(parent_name, investment=amount_to_invest)
+                balance_in_bank_account -= amount_to_invest
+            else:
+                amount_to_withdraw = abs(remaining_cash)
+                amount_to_withdraw = self.total_incomes.withdraw_from_main_portfolio(parent_name, amount_to_withdraw=amount_to_withdraw)       # this is for equal withdraw which is probablly NOT the best strategy
+                balance_in_bank_account += amount_to_withdraw
+    
+            # add back to bank account
+            self.balance_in_bank_account_for_each_parent[parent_name] = balance_in_bank_account
+
+            # raise error if bank account is too low
+            if balance_in_bank_account < -10:
+                raise ValueError("Bank account balance out of bounds")
+
+
+
+    def handle_incomes_and_expenses(self, monthly_incomes, parent_incomes, monthly_expenses, share_expenses=True, share_incomes=True):
+
+        # handle for shared incomes and expenses
+        if share_expenses and share_incomes:
+            self.handle_shared_incomes_and_shared_expenses(monthly_incomes, monthly_expenses)
+            
+        # handle for seperate incomes and expenses
+        if (not share_expenses) and (not share_incomes):
+            self.handle_seperate_incomes_and_seperate_expenses(parent_incomes, monthly_expenses)
 
         # collect portfolio values
         all_portfolios = self.total_incomes.get_portfolios()
         self.portfolio_tracker.add_new_values_of_portfolios(all_portfolios, self.current_repetition)
-        # if self.portfolio_tracker.exists(self.current_repetition) is None:
-        #     self.create_new_tracker(self.current_repetition)
-        #     # self.portfolio_tracker[self.current_repetition] = PortFolioTracker(all_portfolios)
-        # else:
-        #     self.portfolio_tracker[self.current_repetition].add_new_values_of_portfolios(all_portfolios)
 
 
     def simulate_one_year(self):
         for month in range(12):
 
-            # TODO make this per job \ per parent
-
             # get incomes and expenses
-            monthly_incomes = self.total_incomes.get_monthly_incomes()
+            total_income, parent_incomes = self.total_incomes.get_monthly_incomes()
             monthly_expenses = self.total_expenses.get_monthly_expenses()
 
             # handle expenses
-            self.handle_incomes_and_expenses(monthly_incomes, monthly_expenses)
+            self.handle_incomes_and_expenses(total_income, parent_incomes, monthly_expenses, share_expenses=False, share_incomes=False)
 
             # increment month
             self.total_incomes.increment_by_one_month()

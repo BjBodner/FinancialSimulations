@@ -31,7 +31,7 @@ initial:
     job1:
       jobs:
         main_job:
-          base_salary_after_taxes: 18.0
+          base_salary_after_taxes: 18.5
           bonus_fraction_of_annual_income: 0.0
           has_keren_hishtalmut_plan: false
           has_pension_plan: false
@@ -59,7 +59,7 @@ initial:
 simulation_params:
   balance_in_bank_account: 0
   names_of_parents:
-  - job1
   - benjy
+  - job1
   num_years: 35
   number_of_repetitions: 3

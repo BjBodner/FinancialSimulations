@@ -246,6 +246,21 @@ class JobMenu:
         self.menu.add_vertical_margin(20)
         self.menu.add_label("Added offer to saved offers!", align=pygame_menu.locals.ALIGN_CENTER, font_size=30, font_color=(0,200,0))
 
+        # # reinitialize compare menu
+        # self.menu._remove_submenu(self.compare_offers_menu)
+        # del self.compare_offers_menu
+        # self.compare_offers_menu = CompareMenu("Compare Offers", self.global_config, self.config_file)
+
+        # # reinitialize remove menu
+        # self.menu._remove_submenu(self.remove_offers_menu)
+        # del self.remove_offers_menu
+        # self.remove_offers_menu = RemoveMenu("Remove Offers", self.global_config, self.config_file, self.main_menu_object)
+
+        # reinitialize all menus
+        self.reinitialize_submenus()
+        self.reinitialize_main_menu_widgets()
+
+    def reinitialize_submenus(self):
         # reinitialize compare menu
         self.menu._remove_submenu(self.compare_offers_menu)
         del self.compare_offers_menu
@@ -256,8 +271,6 @@ class JobMenu:
         del self.remove_offers_menu
         self.remove_offers_menu = RemoveMenu("Remove Offers", self.global_config, self.config_file, self.main_menu_object)
 
-        # add button to main menu
-        self.reinitialize_main_menu_widgets()
 
     def reinitialize_main_menu_widgets(self):
         self.menu_name_to_widget = {}
@@ -353,7 +366,6 @@ class CompareMenu:
         # config_path = "configs\job_only_config.yaml"
         financial_simulator = FinancialSimulator(temp_config_file)
         financial_simulator.run_simulation()
-        # financial_simulator.plot_all_portfolios()
         financial_simulator.plot_portfolio("net_worth")
 
         print(f"do comparison")
@@ -438,7 +450,7 @@ class RemoveMenu:
 
         # update compare menu
         self.reinitialize_main_menu_widgets()
-        print(f"do comparison")
+        self.initialize_compare_offers_menu()
 
     def reinitialize_main_menu_widgets(self):
         self.menu_name_to_widget = {}
@@ -471,7 +483,6 @@ class MainMenu:
             return yaml.load(fh, yaml.FullLoader)
 
 
-
     def add_parameter_buttons_and_fields(self):
         # add parameter buttons and fields
         self.menu.add_button("Edit Income Handling", self.edit_income_handling_menu.menu, font_size=24, font_color=(0,0,0))
@@ -483,7 +494,6 @@ class MainMenu:
 
         self.menu.add_button("Compare Offers", self.job_menu.compare_offers_menu.menu, font_size=24, font_color=(0,0,0)) # #TODO fix so that it doesn't just copy the instantiation but also updates the version of this menu
         self.menu_name_to_widget["Compare Offers"] = self.menu.get_widgets()[-1]
-
 
 
     def add_navigation_buttons(self):

@@ -1,5 +1,5 @@
 import numpy as np
-from utils import *
+from financial_utils import *
 
 
 class Income:
@@ -96,9 +96,12 @@ class TotalIncomes:
     def get_monthly_incomes(self):
         # TODO output a dict of the incomes per parent
         total_income = 0
+        parent_incomes = {}
         for parent_name in self.dict_of_parents.keys():
-            total_income += self.dict_of_parents[parent_name].get_monthly_incomes()
-        return total_income
+            income = self.dict_of_parents[parent_name].get_monthly_incomes()
+            parent_incomes[parent_name] = income
+            total_income += income
+        return total_income, parent_incomes
 
     def get_portfolios(self):
         portfolios = {}
