@@ -3,18 +3,44 @@ initial:
   expenses:
     fixed_monthly_expenses:
       expense_params:
-        monthly_expense: 4.0
+        monthly_expense: 6.0
       expense_type: FixedMonthlyExpense
   incomes:
-    benjy:
+    facebook:
       jobs:
         main_job:
-          base_salary_after_taxes: 10.5
+          base_salary_after_taxes: 22.0
           bonus_fraction_of_annual_income: 0.0
           has_keren_hishtalmut_plan: true
           has_pension_plan: true
-          options_per_year: 0
+          options_per_year: 20.0
           percentage_of_base_salary_for_stocks: 0.0
+          probability_of_loosing_job: 0.0
+      porfolios:
+        company_stock:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        keren_hishtalmut:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        main_portfolio:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        options:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+        pension:
+          amount_invested: 0
+          minimal_amount_for_withdrawl: 0
+    google:
+      jobs:
+        main_job:
+          base_salary_after_taxes: 19.0
+          bonus_fraction_of_annual_income: 0.0
+          has_keren_hishtalmut_plan: true
+          has_pension_plan: true
+          options_per_year: 50.0
+          percentage_of_base_salary_for_stocks: 0.1
           probability_of_loosing_job: 0.2
       porfolios:
         company_stock:
@@ -64,6 +90,7 @@ simulation_params:
   balance_in_bank_account: 0
   names_of_parents:
   - job3
-  - benjy
-  num_years: 5
+  - google
+  - facebook
+  num_years: 10
   number_of_repetitions: 3
