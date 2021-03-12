@@ -542,11 +542,11 @@ class MainMenu:
         self.menu.add_button("Quit", pygame_menu.events.PYGAME_QUIT, font_size=24, font_color=(0,0,0))
 
             
-    def run(self):
+    def run(self, surface):
         self.menu.mainloop(surface)
 
 
 if __name__ == "__main__":
     pygame.init()
     surface = pygame.display.set_mode(SURFACE_SIZE)
-    MainMenu(surface, number=1).run()
+    MainMenu(surface, number=1).run(surface)
