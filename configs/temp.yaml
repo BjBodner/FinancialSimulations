@@ -1,6 +1,10 @@
 expenses_timeline: null
 initial:
-  expenses: null
+  expenses:
+    fixed_monthly_expenses:
+      expense_params:
+        monthly_expense: 4.0
+      expense_type: FixedMonthlyExpense
   incomes:
     benjy:
       jobs:
@@ -28,7 +32,7 @@ initial:
         pension:
           amount_invested: 0
           minimal_amount_for_withdrawl: 0
-    job1:
+    job3:
       jobs:
         main_job:
           base_salary_after_taxes: 18.5
@@ -59,7 +63,7 @@ initial:
 simulation_params:
   balance_in_bank_account: 0
   names_of_parents:
-  - job1
+  - job3
   - benjy
-  num_years: 35
+  num_years: 5
   number_of_repetitions: 3

@@ -46,8 +46,10 @@ class SimulationSettingsMenu:
         # default_probability_of_loosing_job =  0.2
         # default_percentage_of_base_salary_for_stocks =  0.0
         # default_bonus_fraction_of_annual_income =  0.0
-        default_monthly_expenses = 7.
-        default_number_of_years_to_simulate = 6.
+        # default_monthly_expenses = 7.
+        default_number_of_years_to_simulate = self.global_config["simulation_params"]["num_years"]
+        default_monthly_expenses = self.global_config["initial"]["expenses"]["fixed_monthly_expenses"]["expense_params"]["monthly_expense"]
+
 
         self.monthly_expenses = default_monthly_expenses
         self.number_of_years_to_simulate = default_number_of_years_to_simulate
@@ -72,7 +74,7 @@ class SimulationSettingsMenu:
 
         self.menu.add_text_input("monthly_expenses : ", default=default_monthly_expenses, onchange=self.process_monthly_expenses, valid_chars=VALID_FLOAT_CHARS, align=pygame_menu.locals.ALIGN_LEFT, 
             font_size=20, font_color=(0,0,0),)
-        self.menu.add_text_input("number_of_years_to_simulate : ", default=default_number_of_years_to_simulate, onchange=self.process_number_of_years_to_simulate, valid_chars=VALID_FLOAT_CHARS, align=pygame_menu.locals.ALIGN_LEFT, 
+        self.menu.add_text_input("number_of_years_to_simulate : ", default=default_number_of_years_to_simulate, onchange=self.process_number_of_years_to_simulate, valid_chars=VALID_INT_CHARS, align=pygame_menu.locals.ALIGN_LEFT, 
             font_size=20, font_color=(0,0,0),)
 
 
@@ -104,7 +106,7 @@ class SimulationSettingsMenu:
         self.monthly_expenses = float(monthly_expenses) if len(monthly_expenses) > 0 else 0
 
     def process_number_of_years_to_simulate(self, number_of_years_to_simulate: str):
-        self.number_of_years_to_simulate = float(number_of_years_to_simulate) if len(number_of_years_to_simulate) > 0 else 0
+        self.number_of_years_to_simulate = int(number_of_years_to_simulate) if len(number_of_years_to_simulate) > 0 else 0
 
     # def process_percentage_of_base_salary_for_stocks(self, percentage_of_base_salary_for_stocks: str):
     #     self.job_dict["job_params"]["percentage_of_base_salary_for_stocks"] = float(percentage_of_base_salary_for_stocks) if len(percentage_of_base_salary_for_stocks) > 0 else 0
@@ -124,6 +126,9 @@ class SimulationSettingsMenu:
     def save_settings(self):
         # Add here a function to write the expese dict to the global config
         print(f"number_of_years_to_simulate = {self.number_of_years_to_simulate}, monthly_expenses = {self.monthly_expenses}")
+
+        with open(self.config_file, "r") as fh:
+            self.global_config = yaml.load(fh, yaml.FullLoader)
 
         # add the income to the config of all the saved incomes - the name is the job name
         # name = self.job_dict["name"]
@@ -153,10 +158,9 @@ class SimulationSettingsMenu:
     def reinitialize_main_menu_widgets(self):
         self.menu_name_to_widget = {}
         self.main_menu_object.menu.clear()
+        self.main_menu_object.create_submenus()
         self.main_menu_object.add_parameter_buttons_and_fields()
         self.main_menu_object.add_navigation_buttons()
-
-
 
 
 class JobMenu:
@@ -286,6 +290,7 @@ class JobMenu:
     def reinitialize_main_menu_widgets(self):
         self.menu_name_to_widget = {}
         self.main_menu_object.menu.clear()
+        self.main_menu_object.create_submenus()
         self.main_menu_object.add_parameter_buttons_and_fields()
         self.main_menu_object.add_navigation_buttons()
 
@@ -514,7 +519,7 @@ class MainMenu:
         return config
 
     def create_submenus(self):
-        self.config = self.load_config(config_file)
+        self.config = self.load_config(self.config_file)
         self.job_menu = JobMenu("Add Offer", self.config, self.config_file, self)
         self.simulation_settings_menu = SimulationSettingsMenu("Simulation Settings", self.config, self.config_file, self) # for this just use a fixed expense type
 
